@@ -4,641 +4,1052 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>素材观察报 · THE MATERIAL CHRONICLE</title>
+<meta name="description" content="用结构化事实对抗信息过载，用底层机制拆解流行现象。兼具报刊阅读美感与知识库检索效率的高质量素材归档平台。">
 <style>
-/* ── News Editorial Design Tokens ── */
+/* ═════════════════════════════════════════════════════════════════
+   THE MATERIAL CHRONICLE · EDITORIAL DESIGN SYSTEM (V2.0)
+   Modern Broadside × Editorial Typography × Knowledge Archive
+   ═════════════════════════════════════════════════════════════════ */
+
 :root {
-  --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", Georgia, serif;
+  /* Typography Stacks */
+  --font-serif: "Playfair Display", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", Georgia, serif;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Consolas, Menlo, monospace;
 
-  --bg: #f8f7f4;
-  --paper: #ffffff;
-  --paper-subtle: #f2f0eb;
-  --border-strong: #111111;
-  --border-rule: #d5d1c8;
-  --border-light: #e8e5de;
-  --text-main: #141414;
-  --text-lead: #2c2b29;
-  --text-muted: #6e6b64;
-  --text-caption: #8a867d;
+  /* Editorial Palette: Light Broadside (Warm Newspaper Paper) */
+  --bg-page: #f7f6f2;
+  --bg-sheet: #ffffff;
+  --bg-subtle: #f0eee6;
+  --bg-hover: #eae7dd;
 
-  --news-red: #c8102e;
-  --news-red-soft: #fcf1f2;
-  --news-blue: #0f3d68;
-  --news-gold: #8d6218;
+  --border-headline: #18181b;
+  --border-rule: #d4d1c8;
+  --border-light: #e6e3da;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-card: 0 2px 8px rgba(20,20,20,0.04);
+  --text-main: #18181b;
+  --text-lead: #27272a;
+  --text-muted: #52525b;
+  --text-dim: #71717a;
+  --text-inverse: #ffffff;
+
+  --accent-red: #991b1b;
+  --accent-red-soft: #fef2f2;
+  --accent-red-hover: #7f1d1d;
+  --accent-navy: #1e3a8a;
+  --accent-navy-soft: #eff6ff;
+  --accent-amber: #b45309;
+
+  --badge-bg: #e4e2d8;
+  --badge-text: #3f3f46;
+
+  --shadow-newspaper: 0 1px 3px rgba(0,0,0,0.05), 0 4px 14px rgba(0,0,0,0.04);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,0.08), 0 12px 28px rgba(0,0,0,0.06);
+  --shadow-modal: 0 20px 48px rgba(0,0,0,0.3);
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
 }
 
 [data-theme="dark"] {
-  --bg: #121316;
-  --paper: #1a1b1f;
-  --paper-subtle: #23252a;
-  --border-strong: #e5e5e5;
-  --border-rule: #363940;
-  --border-light: #2b2d34;
-  --text-main: #eae8e4;
-  --text-lead: #d2cfc8;
-  --text-muted: #9da0a8;
-  --text-caption: #777a82;
+  /* Editorial Palette: Dark Ink (Matte Graphite & Ink) */
+  --bg-page: #0f1013;
+  --bg-sheet: #17181c;
+  --bg-subtle: #212328;
+  --bg-hover: #2a2c33;
 
-  --news-red: #ff4d6a;
-  --news-red-soft: #2a1519;
-  --news-blue: #5b9ed8;
-  --news-gold: #e5a73b;
+  --border-headline: #e4e4e7;
+  --border-rule: #2e3138;
+  --border-light: #24262c;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
-  --shadow-card: 0 2px 8px rgba(0,0,0,0.3);
+  --text-main: #f4f4f5;
+  --text-lead: #e4e4e7;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
+  --text-inverse: #0f1013;
+
+  --accent-red: #ef4444;
+  --accent-red-soft: #271618;
+  --accent-red-hover: #f87171;
+  --accent-navy: #60a5fa;
+  --accent-navy-soft: #172554;
+  --accent-amber: #f59e0b;
+
+  --badge-bg: #26282e;
+  --badge-text: #d4d4d8;
+
+  --shadow-newspaper: 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-hover: 0 8px 24px rgba(0,0,0,0.6);
+  --shadow-modal: 0 24px 64px rgba(0,0,0,0.8);
 }
 
+/* ── Reset & Global ── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  background-color: var(--bg);
+  background-color: var(--bg-page);
   color: var(--text-main);
   font-family: var(--font-sans);
-  line-height: 1.65;
+  line-height: 1.68;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.2s, color 0.2s;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  transition: background-color 0.25s, color 0.25s;
 }
 
-/* ── Masthead Top Bar ── */
-.top-ticker-bar {
-  background: var(--paper);
+/* ── Top Auxiliary Masthead Bar ── */
+.aux-top-bar {
+  background: var(--bg-sheet);
   border-bottom: 1px solid var(--border-rule);
-  font-size: 12px;
-  color: var(--text-muted);
-  padding: 6px 0;
+  font-size: 11.5px;
+  color: var(--text-dim);
+  padding: 5px 0;
+  font-family: var(--font-mono);
 }
-.ticker-inner {
-  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+.aux-inner {
+  max-width: 1240px; margin: 0 auto; padding: 0 24px;
   display: flex; justify-content: space-between; align-items: center;
 }
-.ticker-left { display: flex; align-items: center; gap: 16px; }
-.ticker-badge {
-  background: var(--news-red); color: #fff;
-  font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 2px;
+.aux-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.aux-tag-bullet {
+  background: var(--accent-red); color: #fff;
+  font-weight: 700; padding: 1px 6px; border-radius: var(--radius-sm);
   letter-spacing: 0.5px;
 }
-.ticker-right { display: flex; align-items: center; gap: 14px; }
-.mode-toggle {
+.aux-right { display: flex; align-items: center; gap: 12px; }
+.aux-btn {
   background: none; border: 1px solid var(--border-rule);
-  color: var(--text-main); padding: 3px 8px; border-radius: 3px;
-  font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
-  transition: all 0.15s;
+  color: var(--text-muted); padding: 2px 8px; border-radius: var(--radius-sm);
+  font-size: 11.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+  transition: all 0.15s; font-family: var(--font-sans);
 }
-.mode-toggle:hover { border-color: var(--border-strong); }
+.aux-btn:hover { border-color: var(--border-headline); color: var(--text-main); }
+.aux-btn.active { background: var(--accent-red); color: #fff; border-color: var(--accent-red); }
 
-/* ── Newspaper Masthead ── */
-.masthead-wrapper {
-  background: var(--paper);
-  border-bottom: 2px solid var(--border-strong);
+/* ── Primary Newspaper Masthead ── */
+.masthead-section {
+  background: var(--bg-sheet);
+  border-bottom: 2px solid var(--border-headline);
   padding: 24px 0 0;
 }
-.masthead-inner {
-  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+.masthead-container {
+  max-width: 1240px; margin: 0 auto; padding: 0 24px;
   text-align: center;
 }
-.masthead-pre {
+.masthead-super {
   font-family: var(--font-mono);
-  font-size: 11px; letter-spacing: 2px;
-  color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;
+  font-size: 11px; letter-spacing: 3px; font-weight: 600;
+  color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px;
 }
-.masthead-brand {
+.masthead-title-wrap {
+  display: inline-block; cursor: pointer; user-select: none;
+}
+.masthead-title {
   font-family: var(--font-serif);
-  font-size: clamp(34px, 6vw, 56px);
+  font-size: clamp(32px, 5.5vw, 54px);
   font-weight: 900;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   color: var(--text-main);
-  line-height: 1.15;
-  margin-bottom: 8px;
-  cursor: pointer;
-  user-select: none;
+  line-height: 1.12;
+  margin-bottom: 6px;
 }
 .masthead-motto {
   font-family: var(--font-serif);
-  font-size: 14px; font-style: italic;
-  color: var(--text-muted); margin-bottom: 18px;
+  font-size: 13.5px; font-style: italic;
+  color: var(--text-muted); margin-bottom: 16px;
 }
 
-/* ── Newspaper Nav Bar ── */
-.news-nav {
-  border-top: 1px solid var(--border-strong);
-  border-bottom: 1px solid var(--border-strong);
-  margin-top: 14px;
-  background: var(--paper);
+/* ── Editorial Navigation Bar ── */
+.broadside-nav {
+  border-top: 1px solid var(--border-headline);
+  border-bottom: 1px solid var(--border-headline);
+  background: var(--bg-sheet);
+  position: sticky; top: 0; z-index: 90;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
-.nav-inner {
-  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+.nav-container {
+  max-width: 1240px; margin: 0 auto; padding: 0 24px;
   display: flex; justify-content: space-between; align-items: center;
+  min-height: 44px; gap: 16px;
 }
-.nav-categories {
-  display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
-  padding: 6px 0;
+.nav-filters-group {
+  display: flex; align-items: center; gap: 4px; overflow-x: auto;
+  scrollbar-width: none; padding: 4px 0;
 }
-.nav-categories::-webkit-scrollbar { display: none; }
-.nav-item {
-  padding: 6px 14px;
-  font-size: 13.5px; font-weight: 700;
-  color: var(--text-muted);
-  cursor: pointer; white-space: nowrap;
-  border-radius: 2px; transition: all 0.15s;
+.nav-filters-group::-webkit-scrollbar { display: none; }
+.nav-pill {
+  padding: 5px 12px; font-size: 13px; font-weight: 600;
+  color: var(--text-muted); cursor: pointer; white-space: nowrap;
+  border-radius: var(--radius-sm); border: 1px solid transparent;
+  transition: all 0.15s; user-select: none;
 }
-.nav-item:hover { color: var(--text-main); background: var(--paper-subtle); }
-.nav-item.active {
-  color: #fff; background: var(--border-strong);
+.nav-pill:hover { color: var(--text-main); background: var(--bg-subtle); }
+.nav-pill.active {
+  background: var(--border-headline); color: var(--text-inverse);
 }
 
-.nav-search {
+.nav-actions-group {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.search-box-wrap {
   position: relative; width: 220px;
 }
-.nav-search input {
-  width: 100%; padding: 5px 28px 5px 10px;
-  font-size: 13px; background: var(--bg);
+.search-input {
+  width: 100%; padding: 5px 28px 5px 28px;
+  font-size: 12.5px; background: var(--bg-page);
   border: 1px solid var(--border-rule);
-  color: var(--text-main); border-radius: 2px; outline: none;
+  color: var(--text-main); border-radius: var(--radius-sm); outline: none;
+  transition: all 0.2s;
 }
-.nav-search input:focus { border-color: var(--news-red); }
-.nav-search-icon {
-  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-  color: var(--text-muted); font-size: 12px; pointer-events: none;
+.search-input:focus {
+  border-color: var(--accent-red);
+  background: var(--bg-sheet);
+  box-shadow: 0 0 0 2px rgba(153, 27, 27, 0.12);
+  width: 260px;
+}
+.search-icon-left {
+  position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 12px; pointer-events: none;
+}
+.search-clear-btn {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text-dim);
+  font-size: 14px; cursor: pointer; padding: 2px 4px; display: none;
+}
+.search-clear-btn.visible { display: block; }
+
+.view-mode-switch {
+  display: inline-flex; border: 1px solid var(--border-rule);
+  border-radius: var(--radius-sm); overflow: hidden;
+}
+.view-mode-btn {
+  background: var(--bg-sheet); border: none; padding: 4px 9px;
+  font-size: 12px; cursor: pointer; color: var(--text-muted);
+  transition: all 0.15s;
+}
+.view-mode-btn.active {
+  background: var(--border-headline); color: var(--text-inverse);
 }
 
-/* ── Layout Container ── */
-.container {
-  max-width: 1180px; margin: 0 auto; padding: 24px 24px 80px;
+/* ── Main Layout Canvas ── */
+.main-canvas {
+  flex: 1; max-width: 1240px; width: 100%; margin: 0 auto;
+  padding: 24px 24px 80px;
 }
 
-/* ── Newspaper Front Page (Grid & Lead Story) ── */
-.edition-bar {
+/* ── Section Edition Header ── */
+.broadside-header-line {
   display: flex; justify-content: space-between; align-items: baseline;
   border-bottom: 1px solid var(--border-rule);
-  padding-bottom: 10px; margin-bottom: 24px;
+  padding-bottom: 8px; margin-bottom: 22px;
+  flex-wrap: wrap; gap: 8px;
 }
-.edition-title {
+.broadside-label {
   font-family: var(--font-serif);
-  font-size: 18px; font-weight: 800;
-  color: var(--news-red);
-  display: flex; align-items: center; gap: 8px;
+  font-size: 16px; font-weight: 800;
+  color: var(--accent-red);
+  display: inline-flex; align-items: center; gap: 8px;
 }
-.edition-title::after {
-  content: ""; display: inline-block; width: 30px; height: 1px; background: var(--news-red);
+.broadside-label::after {
+  content: ""; display: inline-block; width: 24px; height: 1.5px; background: var(--accent-red);
 }
-.edition-count {
-  font-size: 13px; color: var(--text-muted);
+.broadside-meta-hint {
+  font-size: 12px; color: var(--text-dim); font-family: var(--font-mono);
 }
 
-/* ── Frontpage News Layout ── */
-.front-layout {
+/* ── FRONT PAGE EDITORIAL LAYOUT (Non-symmetric Broadside) ── */
+.editorial-layout {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: 1.75fr 1fr;
   gap: 28px;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
-/* Lead Story Card */
-.lead-story {
-  background: var(--paper);
+/* Lead Broadside Story */
+.lead-broadside {
+  background: var(--bg-sheet);
   border: 1px solid var(--border-rule);
-  padding: 24px;
+  box-shadow: var(--shadow-newspaper);
+  padding: 26px;
+  display: flex; flex-direction: column;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  display: flex; flex-direction: column;
-}
-.lead-story:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-.lead-kicker {
-  font-family: var(--font-mono);
-  font-size: 11px; font-weight: 700;
-  color: var(--news-red); text-transform: uppercase;
-  letter-spacing: 1px; margin-bottom: 8px;
-  display: flex; align-items: center; gap: 8px;
-}
-.lead-image-wrap {
-  width: 100%; height: 320px; overflow: hidden;
-  background: var(--paper-subtle); margin-bottom: 16px;
   position: relative;
 }
-.lead-image {
-  width: 100%; height: 100%; object-fit: cover;
-  transition: transform 0.4s ease;
+.lead-broadside:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-headline);
+  box-shadow: var(--shadow-hover);
 }
-.lead-story:hover .lead-image { transform: scale(1.02); }
+.lead-kicker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.kicker-tag {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px;
+}
+.bookmark-star-btn {
+  background: none; border: none; font-size: 16px; color: var(--text-dim);
+  cursor: pointer; padding: 2px; transition: color 0.15s, transform 0.15s;
+}
+.bookmark-star-btn:hover { color: var(--accent-amber); transform: scale(1.15); }
+.bookmark-star-btn.bookmarked { color: var(--accent-amber); }
+
+.lead-img-box {
+  width: 100%; height: 320px; overflow: hidden;
+  background: var(--bg-subtle); margin-bottom: 16px;
+  position: relative; border-radius: var(--radius-sm);
+}
+.lead-img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.35s ease;
+}
+.lead-broadside:hover .lead-img { transform: scale(1.02); }
+
 .lead-headline {
   font-family: var(--font-serif);
-  font-size: clamp(22px, 2.5vw, 28px);
-  font-weight: 800; line-height: 1.35;
+  font-size: clamp(23px, 2.7vw, 32px);
+  font-weight: 900; line-height: 1.32;
   color: var(--text-main); margin-bottom: 12px;
+  letter-spacing: -0.2px;
 }
-.lead-story:hover .lead-headline { color: var(--news-red); }
+.lead-broadside:hover .lead-headline { color: var(--accent-red); }
+
 .lead-deck {
-  font-size: 15px; line-height: 1.7;
-  color: var(--text-lead); margin-bottom: 16px; flex: 1;
-}
-.lead-byline {
-  font-size: 12px; color: var(--text-muted);
-  border-top: 1px solid var(--border-light);
-  padding-top: 12px; display: flex; justify-content: space-between; align-items: center;
-}
-.news-badge {
-  font-size: 11px; padding: 2px 6px;
-  background: var(--paper-subtle); color: var(--text-muted);
-  border-radius: 2px; font-weight: 600;
-}
-.read-more-link {
-  color: var(--news-red); font-weight: 700; font-size: 13px;
-  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 14.5px; line-height: 1.72;
+  color: var(--text-lead); margin-bottom: 18px; flex: 1;
 }
 
-/* Secondary Stories Column */
+/* Integrated Fact Preview inside Lead */
+.lead-facts-preview {
+  background: var(--bg-subtle);
+  border-left: 3px solid var(--accent-red);
+  padding: 10px 14px; margin-bottom: 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.lead-facts-title {
+  font-size: 11.5px; font-weight: 800; color: var(--text-main);
+  text-transform: uppercase; margin-bottom: 4px; font-family: var(--font-mono);
+}
+.lead-facts-item {
+  font-size: 13px; color: var(--text-muted); line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lead-footer-row {
+  border-top: 1px solid var(--border-light);
+  padding-top: 12px; font-size: 12px; color: var(--text-dim);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-mono);
+}
+.read-action-link {
+  color: var(--accent-red); font-weight: 700; font-family: var(--font-sans);
+  font-size: 13px; display: inline-flex; align-items: center; gap: 4px;
+}
+
+/* Secondary Column */
 .secondary-column {
   display: flex; flex-direction: column; gap: 20px;
 }
-.sec-story {
-  background: var(--paper);
+.sec-card {
+  background: var(--bg-sheet);
   border: 1px solid var(--border-rule);
+  box-shadow: var(--shadow-newspaper);
   padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 10px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  display: flex; gap: 16px; align-items: flex-start;
+  position: relative;
 }
-.sec-story:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-sm);
+.sec-card:hover {
   transform: translateY(-2px);
+  border-color: var(--border-headline);
+  box-shadow: var(--shadow-hover);
 }
-.sec-content { flex: 1; }
-.sec-kicker {
-  font-size: 11px; font-weight: 700; color: var(--news-blue);
-  text-transform: uppercase; margin-bottom: 6px;
+.sec-header {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sec-tag {
+  font-size: 11px; font-weight: 700; color: var(--accent-navy);
+  font-family: var(--font-mono); text-transform: uppercase;
 }
 .sec-headline {
   font-family: var(--font-serif);
-  font-size: 17px; font-weight: 700; line-height: 1.4;
-  color: var(--text-main); margin-bottom: 8px;
+  font-size: 18px; font-weight: 800; line-height: 1.4;
+  color: var(--text-main);
 }
-.sec-story:hover .sec-headline { color: var(--news-red); }
-.sec-snippet {
+.sec-card:hover .sec-headline { color: var(--accent-red); }
+.sec-deck {
   font-size: 13px; color: var(--text-muted); line-height: 1.6;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  overflow: hidden; margin-bottom: 10px;
-}
-.sec-time { font-size: 11.5px; color: var(--text-caption); }
-.sec-thumb {
-  width: 110px; height: 85px; object-fit: cover;
-  background: var(--paper-subtle); flex-shrink: 0;
-}
-
-/* ── More News Grid ── */
-.more-news-section {
-  border-top: 2px solid var(--border-strong);
-  padding-top: 24px;
-}
-.section-headline {
-  font-family: var(--font-serif);
-  font-size: 20px; font-weight: 900;
-  margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;
-}
-.news-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 22px;
-}
-.grid-card {
-  background: var(--paper);
-  border: 1px solid var(--border-rule);
-  padding: 18px;
-  cursor: pointer;
-  display: flex; flex-direction: column;
-  transition: all 0.2s;
-}
-.grid-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-2px);
-}
-.grid-card-thumb-wrap {
-  width: 100%; height: 160px; overflow: hidden;
-  background: var(--paper-subtle); margin-bottom: 12px;
-}
-.grid-card-thumb {
-  width: 100%; height: 100%; object-fit: cover;
-  transition: transform 0.3s;
-}
-.grid-card:hover .grid-card-thumb { transform: scale(1.03); }
-.grid-card-title {
-  font-family: var(--font-serif);
-  font-size: 16.5px; font-weight: 700; line-height: 1.45;
-  color: var(--text-main); margin-bottom: 8px;
-}
-.grid-card:hover .grid-card-title { color: var(--news-red); }
-.grid-card-desc {
-  font-size: 13px; color: var(--text-muted); line-height: 1.6;
-  margin-bottom: 12px; flex: 1;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.grid-card-footer {
-  font-size: 11.5px; color: var(--text-caption);
+.sec-meta-footer {
   border-top: 1px solid var(--border-light);
-  padding-top: 10px; display: flex; justify-content: space-between; align-items: center;
+  padding-top: 10px; font-size: 11.5px; color: var(--text-dim);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-mono);
 }
 
-/* ── ARTICLE DETAIL VIEW (Full Newspaper Article) ── */
-.article-view {
-  display: none;
-  animation: fadeIn 0.2s ease-out;
+/* ── MECHANISM & TOPIC STRIP ── */
+.mechanism-banner {
+  background: var(--bg-sheet);
+  border: 1px solid var(--border-rule);
+  border-left: 4px solid var(--accent-navy);
+  padding: 16px 20px; margin-bottom: 32px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 14px;
 }
-.article-view.active { display: block; }
+.mech-info h4 {
+  font-family: var(--font-serif); font-size: 15px; font-weight: 800;
+  color: var(--text-main); margin-bottom: 2px;
+}
+.mech-info p {
+  font-size: 12.5px; color: var(--text-muted);
+}
+.mech-badges-wrap {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.mech-badge {
+  background: var(--accent-navy-soft); color: var(--accent-navy);
+  font-size: 11.5px; font-weight: 700; padding: 3px 8px;
+  border-radius: var(--radius-sm); font-family: var(--font-mono);
+  cursor: pointer; transition: all 0.15s;
+}
+.mech-badge:hover { background: var(--accent-navy); color: #fff; }
+
+/* ── ARCHIVE GRID / COMPACT VIEW ── */
+.archive-stream-section {
+  border-top: 2px solid var(--border-headline);
+  padding-top: 22px;
+}
+.stream-title-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 18px;
+}
+.stream-headline {
+  font-family: var(--font-serif);
+  font-size: 19px; font-weight: 900;
+}
+
+/* Grid Mode */
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 22px;
+}
+.stream-card {
+  background: var(--bg-sheet);
+  border: 1px solid var(--border-rule);
+  padding: 18px; display: flex; flex-direction: column;
+  box-shadow: var(--shadow-newspaper);
+  cursor: pointer; transition: all 0.2s; position: relative;
+}
+.stream-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-headline);
+  box-shadow: var(--shadow-hover);
+}
+.stream-card-thumb-wrap {
+  width: 100%; height: 160px; overflow: hidden;
+  background: var(--bg-subtle); margin-bottom: 12px;
+  border-radius: var(--radius-sm);
+}
+.stream-card-thumb {
+  width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;
+}
+.stream-card:hover .stream-card-thumb { transform: scale(1.03); }
+.stream-card-title {
+  font-family: var(--font-serif);
+  font-size: 16.5px; font-weight: 800; line-height: 1.45;
+  color: var(--text-main); margin-bottom: 8px;
+}
+.stream-card:hover .stream-card-title { color: var(--accent-red); }
+.stream-card-desc {
+  font-size: 13px; color: var(--text-muted); line-height: 1.6;
+  margin-bottom: 14px; flex: 1;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.stream-card-footer {
+  border-top: 1px solid var(--border-light);
+  padding-top: 10px; font-size: 11.5px; color: var(--text-dim);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-mono);
+}
+
+/* Compact Table Mode */
+.compact-stream-wrap {
+  display: none; background: var(--bg-sheet);
+  border: 1px solid var(--border-rule);
+  box-shadow: var(--shadow-newspaper);
+}
+.compact-stream-wrap.active { display: block; }
+.compact-item {
+  display: grid;
+  grid-template-columns: 140px 1fr 140px 100px;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer; transition: background 0.15s;
+}
+.compact-item:last-child { border-bottom: none; }
+.compact-item:hover { background: var(--bg-subtle); }
+.compact-date {
+  font-family: var(--font-mono); font-size: 12px; color: var(--text-dim);
+}
+.compact-title {
+  font-family: var(--font-serif); font-size: 15px; font-weight: 700;
+  color: var(--text-main); padding-right: 16px;
+}
+.compact-item:hover .compact-title { color: var(--accent-red); }
+.compact-stance {
+  font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);
+}
+.compact-action {
+  text-align: right; font-size: 12px; font-weight: 700; color: var(--accent-red);
+}
+
+/* Empty State */
+.empty-box {
+  padding: 60px 20px; text-align: center; color: var(--text-muted);
+  background: var(--bg-sheet); border: 1px dashed var(--border-rule);
+}
+.empty-title { font-family: var(--font-serif); font-size: 18px; margin-bottom: 8px; color: var(--text-main); }
+.reset-btn {
+  margin-top: 14px; background: var(--border-headline); color: var(--text-inverse);
+  border: none; padding: 6px 14px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border-radius: var(--radius-sm);
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   ARTICLE DETAIL VIEW (Full Broadside Editorial Sheet)
+   ═════════════════════════════════════════════════════════════════ */
+.article-viewport {
+  display: none; animation: fadeIn 0.22s ease-out;
+}
+.article-viewport.active { display: block; }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.article-nav-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 24px; padding-bottom: 14px;
+/* Sticky Action Bar above article */
+.article-sticky-bar {
+  position: sticky; top: 0; z-index: 95;
+  background: var(--bg-sheet);
   border-bottom: 1px solid var(--border-rule);
+  padding: 8px 0; margin-bottom: 24px;
 }
-.back-to-front {
-  background: var(--paper); border: 1px solid var(--border-rule);
-  color: var(--text-main); padding: 8px 16px; font-size: 13.5px; font-weight: 700;
+.sticky-bar-inner {
+  max-width: 920px; margin: 0 auto; padding: 0 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 10px;
+}
+.back-btn-cmd {
+  background: var(--bg-page); border: 1px solid var(--border-rule);
+  color: var(--text-main); padding: 5px 12px; font-size: 12.5px; font-weight: 700;
   cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  border-radius: var(--radius-sm); transition: all 0.15s;
+}
+.back-btn-cmd:hover { background: var(--border-headline); color: var(--text-inverse); }
+.sticky-breadcrumbs {
+  font-size: 12px; color: var(--text-dim); font-family: var(--font-mono);
+}
+.article-quick-actions {
+  display: flex; gap: 6px; align-items: center;
+}
+.act-icon-btn {
+  background: var(--bg-page); border: 1px solid var(--border-rule);
+  color: var(--text-muted); padding: 4px 10px; font-size: 12px;
+  cursor: pointer; border-radius: var(--radius-sm); font-weight: 600;
+  display: inline-flex; align-items: center; gap: 4px;
   transition: all 0.15s;
 }
-.back-to-front:hover {
-  background: var(--border-strong); color: #fff;
+.act-icon-btn:hover { border-color: var(--border-headline); color: var(--text-main); }
+.act-icon-btn.active { background: var(--accent-amber); color: #fff; border-color: var(--accent-amber); }
+
+/* Reading Progress Bar */
+.reading-progress-track {
+  position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
+  background: var(--border-light);
 }
-.article-breadcrumbs {
-  font-size: 12.5px; color: var(--text-muted);
+.reading-progress-fill {
+  width: 0%; height: 100%; background: var(--accent-red);
+  transition: width 0.1s linear;
 }
 
-.article-sheet {
-  background: var(--paper);
+/* Article Broadside Sheet */
+.article-sheet-canvas {
+  background: var(--bg-sheet);
   border: 1px solid var(--border-rule);
-  box-shadow: var(--shadow-card);
-  padding: clamp(24px, 5vw, 56px);
-  max-width: 900px; margin: 0 auto;
+  box-shadow: var(--shadow-newspaper);
+  max-width: 920px; margin: 0 auto;
+  padding: clamp(24px, 5vw, 64px);
 }
 
-.art-kicker {
-  font-family: var(--font-mono);
-  font-size: 12px; font-weight: 800;
-  color: var(--news-red); text-transform: uppercase;
-  letter-spacing: 1.5px; margin-bottom: 12px;
+.art-meta-kicker {
   display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11.5px; font-weight: 800;
+  color: var(--accent-red); text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 14px;
 }
-.art-headline {
+.art-headline-title {
   font-family: var(--font-serif);
-  font-size: clamp(28px, 4vw, 42px);
+  font-size: clamp(26px, 4vw, 44px);
   font-weight: 900; line-height: 1.25;
   color: var(--text-main); margin-bottom: 18px;
+  letter-spacing: -0.3px;
 }
-.art-deck {
+
+.art-deck-quote {
   font-family: var(--font-serif);
   font-size: 18px; line-height: 1.65;
   color: var(--text-lead);
-  border-left: 3px solid var(--news-red);
-  padding-left: 16px; margin-bottom: 24px;
+  border-left: 3px solid var(--accent-red);
+  background: var(--bg-subtle);
+  padding: 14px 18px; margin-bottom: 24px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   font-style: italic;
 }
 
-.art-byline-box {
+.art-byline-banner {
   display: flex; justify-content: space-between; align-items: center;
   border-top: 1px solid var(--border-rule);
   border-bottom: 1px solid var(--border-rule);
   padding: 10px 0; margin-bottom: 28px;
-  font-size: 13px; color: var(--text-muted);
-  flex-wrap: wrap; gap: 10px;
+  font-size: 12.5px; color: var(--text-muted);
+  flex-wrap: wrap; gap: 10px; font-family: var(--font-mono);
 }
-.byline-author { font-weight: 700; color: var(--text-main); }
-.byline-source a {
-  color: var(--news-blue); text-decoration: none; font-weight: 600;
-}
-.byline-source a:hover { text-decoration: underline; }
+.byline-staff { font-weight: 700; color: var(--text-main); }
+.byline-origin-link { color: var(--accent-navy); text-decoration: none; font-weight: 600; }
+.byline-origin-link:hover { text-decoration: underline; }
 
-.art-featured-image {
-  margin: 24px 0;
+.art-main-illustration {
+  margin: 24px 0 28px;
 }
-.art-img {
-  width: 100%; max-height: 520px; object-fit: cover;
-  background: var(--paper-subtle); display: block;
+.art-photo-wrap {
+  width: 100%; max-height: 540px; overflow: hidden;
+  background: var(--bg-subtle); border-radius: var(--radius-sm);
+  cursor: zoom-in;
 }
-.art-caption {
-  font-size: 12px; color: var(--text-caption);
-  padding: 8px 4px 0; border-bottom: 1px solid var(--border-light);
+.art-photo {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.art-photo-caption {
+  font-size: 12px; color: var(--text-dim); padding: 8px 4px 0;
+  border-bottom: 1px solid var(--border-light);
   line-height: 1.5; font-style: italic;
 }
 
-/* Fact Box (Key Takeaways) */
-.factbox {
-  background: var(--paper-subtle);
+/* Fact Box */
+.art-factbox {
+  background: var(--bg-subtle);
   border: 1px solid var(--border-rule);
-  border-top: 3px solid var(--border-strong);
-  padding: 20px 24px; margin: 30px 0;
+  border-top: 3px solid var(--border-headline);
+  padding: 22px 24px; margin: 32px 0;
+  border-radius: var(--radius-sm);
 }
-.factbox-title {
-  font-family: var(--font-serif);
-  font-size: 15px; font-weight: 800;
+.factbox-header-title {
+  font-family: var(--font-serif); font-size: 15.5px; font-weight: 800;
   text-transform: uppercase; letter-spacing: 0.5px;
-  margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
 }
-.factbox-list {
+.factbox-points-list {
   list-style: none; display: flex; flex-direction: column; gap: 10px;
 }
-.factbox-list li {
+.factbox-points-list li {
   font-size: 14.5px; line-height: 1.65; color: var(--text-main);
-  position: relative; padding-left: 18px;
+  position: relative; padding-left: 20px;
 }
-.factbox-list li::before {
+.factbox-points-list li::before {
   content: "■"; position: absolute; left: 0; top: 0;
-  font-size: 10px; color: var(--news-red);
+  font-size: 9px; color: var(--accent-red);
 }
 
-/* Section Subhead & Body */
-.news-subhead {
+/* Section Headlines */
+.news-sub-heading {
   font-family: var(--font-serif);
   font-size: 21px; font-weight: 800;
-  color: var(--text-main); margin: 34px 0 14px;
+  color: var(--text-main); margin: 36px 0 14px;
   padding-bottom: 6px; border-bottom: 1px solid var(--border-rule);
 }
-.art-body-text {
-  font-size: 16px; line-height: 1.85; color: var(--text-main);
+.art-prose-text {
+  font-size: 16px; line-height: 1.86; color: var(--text-main);
   margin-bottom: 18px; white-space: pre-line;
 }
 
-/* Pull Quote */
-.art-pullquote {
+/* Editorial Pullquote */
+.editorial-pullquote {
   margin: 36px 0; padding: 24px 32px;
-  border-top: 2px solid var(--border-strong);
-  border-bottom: 2px solid var(--border-strong);
+  border-top: 2px solid var(--border-headline);
+  border-bottom: 2px solid var(--border-headline);
   text-align: center;
 }
-.art-pullquote-quote {
+.pullquote-verbatim {
   font-family: var(--font-serif);
-  font-size: clamp(19px, 2.5vw, 24px);
+  font-size: clamp(19px, 2.5vw, 25px);
   font-weight: 700; line-height: 1.5;
   color: var(--text-main); font-style: italic; margin-bottom: 8px;
 }
-.art-pullquote-source {
-  font-size: 12.5px; color: var(--text-muted); text-transform: uppercase;
-  letter-spacing: 1px;
+.pullquote-attribution {
+  font-size: 12px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 1.5px; font-family: var(--font-mono);
 }
 
-/* Op-Ed Commentary Box */
-.commentary-box {
-  background: var(--news-red-soft);
-  border: 1px solid rgba(200,16,46,0.2);
-  border-left: 4px solid var(--news-red);
-  padding: 20px 24px; margin: 32px 0;
+/* Op-Ed Commentary */
+.op-ed-box {
+  background: var(--accent-red-soft);
+  border: 1px solid rgba(153, 27, 27, 0.2);
+  border-left: 4px solid var(--accent-red);
+  padding: 22px 24px; margin: 32px 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
-.commentary-header {
-  font-size: 13px; font-weight: 800; color: var(--news-red);
+.op-ed-label {
+  font-size: 13px; font-weight: 800; color: var(--accent-red);
   text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+  font-family: var(--font-mono);
 }
-.commentary-text {
-  font-size: 15.5px; line-height: 1.75; color: var(--text-main);
+.op-ed-body {
+  font-size: 15.5px; line-height: 1.78; color: var(--text-main);
 }
 
-/* Article Footer */
-.art-footer-actions {
-  display: flex; justify-content: space-between; align-items: center;
-  border-top: 1px solid var(--border-rule);
+/* Productivity Toolbox Panel */
+.productivity-panel {
+  background: var(--bg-page);
+  border: 1px solid var(--border-rule);
+  padding: 18px 22px; margin: 36px 0;
+  border-radius: var(--radius-sm);
+}
+.toolbox-title {
+  font-size: 13px; font-weight: 800; color: var(--text-main);
+  text-transform: uppercase; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-mono);
+}
+.toolbox-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+.toolbox-action-btn {
+  background: var(--bg-sheet); border: 1px solid var(--border-rule);
+  color: var(--text-main); padding: 9px 12px; font-size: 12.5px;
+  font-weight: 600; cursor: pointer; text-align: left;
+  border-radius: var(--radius-sm); display: flex; align-items: center; gap: 8px;
+  transition: all 0.15s;
+}
+.toolbox-action-btn:hover {
+  border-color: var(--border-headline); background: var(--bg-subtle);
+}
+
+/* Related Stories Strip */
+.related-section {
+  border-top: 2px solid var(--border-headline);
   padding-top: 24px; margin-top: 40px;
+}
+.related-title {
+  font-family: var(--font-serif); font-size: 18px; font-weight: 800;
+  margin-bottom: 16px;
+}
+.related-cards-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.rel-mini-card {
+  background: var(--bg-page); border: 1px solid var(--border-rule);
+  padding: 14px; cursor: pointer; border-radius: var(--radius-sm);
+  transition: all 0.15s;
+}
+.rel-mini-card:hover {
+  border-color: var(--border-headline); background: var(--bg-subtle);
+}
+.rel-tag { font-size: 11px; font-family: var(--font-mono); color: var(--accent-navy); margin-bottom: 4px; }
+.rel-title { font-family: var(--font-serif); font-size: 14.5px; font-weight: 700; color: var(--text-main); }
+
+/* ── Lightbox Modal ── */
+.lightbox-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88); z-index: 1000;
+  justify-content: center; align-items: center;
+  padding: 24px; cursor: zoom-out;
+  backdrop-filter: blur(4px);
+}
+.lightbox-modal.active { display: flex; }
+.lightbox-img {
+  max-width: 94vw; max-height: 90vh;
+  object-fit: contain; box-shadow: var(--shadow-modal);
+  border-radius: var(--radius-sm);
+}
+
+/* ── Toast Notification ── */
+.toast-notice {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--border-headline); color: var(--text-inverse);
+  padding: 8px 16px; font-size: 12.5px; font-weight: 600;
+  border-radius: var(--radius-sm);
+  opacity: 0; transform: translateY(10px); transition: all 0.2s;
+  pointer-events: none; z-index: 1100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.toast-notice.show { opacity: 1; transform: translateY(0); }
+
+/* ── Footer ── */
+.site-broadside-footer {
+  background: var(--bg-sheet);
+  border-top: 1px solid var(--border-rule);
+  padding: 30px 24px; margin-top: auto;
+  font-size: 12px; color: var(--text-dim);
+  text-align: center;
+}
+.footer-inner {
+  max-width: 1240px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
   flex-wrap: wrap; gap: 12px;
 }
-.art-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.art-tag-badge {
-  background: var(--paper-subtle); color: var(--text-muted);
-  font-size: 12px; padding: 3px 10px; border-radius: 2px;
-  cursor: pointer;
-}
-.art-tag-badge:hover { color: var(--text-main); }
-.share-btn {
-  background: var(--paper); border: 1px solid var(--border-rule);
-  padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
-  border-radius: 2px;
-}
-.share-btn:hover { border-color: var(--border-strong); }
 
-/* ── Lightbox & Toast ── */
-.toast {
-  position: fixed; bottom: 24px; right: 24px;
-  background: var(--border-strong); color: #fff;
-  padding: 8px 16px; font-size: 13px; border-radius: 2px;
-  opacity: 0; transform: translateY(10px); transition: all 0.2s; pointer-events: none;
-  z-index: 999;
+/* ── Responsive Adaptations ── */
+@media (max-width: 960px) {
+  .editorial-layout { grid-template-columns: 1fr; }
+  .lead-img-box { height: 240px; }
+  .compact-item { grid-template-columns: 100px 1fr; gap: 8px; }
+  .compact-stance, .compact-action { display: none; }
 }
-.toast.show { opacity: 1; transform: translateY(0); }
 
-/* ── Responsive ── */
-@media (max-width: 860px) {
-  .front-layout { grid-template-columns: 1fr; }
-  .lead-image-wrap { height: 220px; }
-  .sec-story { flex-direction: column-reverse; }
-  .sec-thumb { width: 100%; height: 160px; }
-  .nav-inner { flex-direction: column; gap: 10px; align-items: stretch; }
-  .nav-search { width: 100%; }
+@media (max-width: 640px) {
+  .nav-container { flex-direction: column; align-items: stretch; gap: 8px; }
+  .nav-actions-group { justify-content: space-between; }
+  .search-box-wrap { width: 100%; flex: 1; }
+  .search-input:focus { width: 100%; }
+  .masthead-section { padding-top: 16px; }
+  .aux-inner { flex-direction: column; gap: 6px; text-align: center; }
+  .article-sheet-canvas { padding: 20px 16px; }
+  .article-sticky-bar { padding: 6px 0; }
+  .art-headline-title { font-size: 24px; }
 }
 </style>
 </head>
 <body>
 
-<!-- TOP TICKER -->
-<div class="top-ticker-bar">
-  <div class="ticker-inner">
-    <div class="ticker-left">
-      <span class="ticker-badge">特刊</span>
+<!-- TOP AUXILIARY MASTHEAD BAR -->
+<div class="aux-top-bar">
+  <div class="aux-inner">
+    <div class="aux-left">
+      <span class="aux-tag-bullet">特辑</span>
       <span id="currentDateStr">2026年11月19日 · 深度素材周报</span>
-      <span style="opacity:0.6;">|</span>
-      <span>结构化事实观察站</span>
+      <span style="opacity:0.4;">|</span>
+      <span>结构化事实观察站 · 时代切片与机制归档</span>
     </div>
-    <div class="ticker-right">
-      <span id="articleCountBadge">收录 0 篇</span>
-      <button class="mode-toggle" onclick="toggleTheme()" id="themeBtn">🌓 切换夜间</button>
+    <div class="aux-right">
+      <button class="aux-btn" id="pinnedCountBtn" onclick="toggleFilterPinned()">
+        <span>★ 收藏</span>
+        <span id="pinnedBadge" style="font-weight:700;">0</span>
+      </button>
+      <button class="aux-btn" onclick="toggleTheme()" id="themeBtn">🌓 切换夜间</button>
     </div>
   </div>
 </div>
 
 <!-- MASTHEAD -->
-<header class="masthead-wrapper">
-  <div class="masthead-inner">
-    <div class="masthead-pre">THE MATERIAL CHRONICLE · 观察与思考</div>
-    <div class="masthead-brand" onclick="goHome()">素材观察报</div>
-    <div class="masthead-motto">“记录时代切片，用结构化事实拆解流行现象”</div>
+<header class="masthead-section">
+  <div class="masthead-container">
+    <div class="masthead-super">THE MATERIAL CHRONICLE · 事实剖析与深度观察</div>
+    <div class="masthead-title-wrap" onclick="goHome()">
+      <h1 class="masthead-title">素材观察报</h1>
+    </div>
+    <div class="masthead-motto">“记录时代切片，用结构化事实对抗信息过载，用底层机制拆解流行现象”</div>
   </div>
 
-  <nav class="news-nav">
-    <div class="nav-inner">
-      <div class="nav-categories" id="navCategoryList">
-        <span class="nav-item active" onclick="filterCategory(null)">全部要闻</span>
+  <!-- NAVIGATION -->
+  <nav class="broadside-nav">
+    <div class="nav-container">
+      <div class="nav-filters-group" id="navCategoryList">
+        <span class="nav-pill active" onclick="filterCategory(null)">全部要闻</span>
       </div>
-      <div class="nav-search">
-        <input type="text" id="searchInput" placeholder="检索新闻、机制、观点…" autocomplete="off">
-        <span class="nav-search-icon">🔍</span>
+
+      <div class="nav-actions-group">
+        <!-- View Mode Switch -->
+        <div class="view-mode-switch">
+          <button class="view-mode-btn active" id="btnViewGrid" onclick="setViewMode('grid')" title="报刊卡片排版">📰</button>
+          <button class="view-mode-btn" id="btnViewCompact" onclick="setViewMode('compact')" title="紧凑档案列表">🗂️</button>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box-wrap">
+          <span class="search-icon-left">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="检索事实、机制或观点 (按 /)" autocomplete="off">
+          <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()">×</button>
+        </div>
       </div>
     </div>
   </nav>
 </header>
 
-<main class="container">
-  <!-- FRONT PAGE VIEW (NEWSPAPER GRID) -->
+<!-- MAIN CONTENT CANVAS -->
+<main class="main-canvas">
+
+  <!-- ── 1. FRONT PAGE VIEW ── -->
   <div id="frontPageView">
-    <div class="edition-bar">
-      <div class="edition-title">头条观察 · 今日速递</div>
-      <div class="edition-count" id="matchSummary">正在载入要闻…</div>
+    <!-- Header Line -->
+    <div class="broadside-header-line">
+      <div class="broadside-label" id="frontSectionTitle">头版观察 · 今日核心速递</div>
+      <div class="broadside-meta-hint" id="matchSummaryHint">正在加载深度素材…</div>
     </div>
 
-    <!-- Lead Story + Side Columns -->
-    <div class="front-layout" id="frontLayout"></div>
+    <!-- Editorial Layout (Lead Story + Secondary Column) -->
+    <div class="editorial-layout" id="editorialLayout"></div>
 
-    <!-- More Stories Section -->
-    <div class="more-news-section" id="moreSection" style="display:none;">
-      <div class="section-headline">
-        <span>更多要闻与专题</span>
+    <!-- Mechanism Highlights Strip -->
+    <div class="mechanism-banner" id="mechanismBanner">
+      <div class="mech-info">
+        <h4>💡 底层思维模型与机制分类</h4>
+        <p>从事件中提炼可迁移的认知规律，点击快速筛选同类机制素材：</p>
       </div>
-      <div class="news-grid" id="newsGrid"></div>
+      <div class="mech-badges-wrap" id="mechBadgesWrap">
+        <!-- Dynamically injected -->
+      </div>
+    </div>
+
+    <!-- Archive Stream Section -->
+    <div class="archive-stream-section" id="archiveStreamSection">
+      <div class="stream-title-row">
+        <div class="stream-headline">深度事实与专题档案</div>
+        <div style="font-size:12px; color:var(--text-dim); font-family:var(--font-mono);" id="streamStats">呈现 0 条记录</div>
+      </div>
+
+      <!-- Mode A: Grid Cards -->
+      <div class="stories-grid" id="storiesGrid"></div>
+
+      <!-- Mode B: Compact Table -->
+      <div class="compact-stream-wrap" id="compactStreamWrap">
+        <div id="compactItemsList"></div>
+      </div>
     </div>
   </div>
 
-  <!-- ARTICLE DETAIL VIEW -->
-  <article class="article-view" id="articleView">
-    <div class="article-nav-bar">
-      <button class="back-to-front" onclick="goHome()">← 返回要闻版面</button>
-      <div class="article-breadcrumbs" id="artBreadcrumbs">要闻中心 > 深度观察 > 正文</div>
+  <!-- ── 2. ARTICLE DETAIL VIEW ── -->
+  <article class="article-viewport" id="articleViewport">
+    <!-- Sticky Command Bar -->
+    <div class="article-sticky-bar">
+      <div class="sticky-bar-inner">
+        <button class="back-btn-cmd" onclick="goHome()">
+          <span>← 返回要闻版面</span>
+          <span style="font-size:10px; opacity:0.6; font-family:var(--font-mono);">[Esc]</span>
+        </button>
+        <div class="sticky-breadcrumbs" id="stickyBreadcrumbs">要闻中心 > 深度观察</div>
+        <div class="article-quick-actions">
+          <button class="act-icon-btn" id="detailBookmarkBtn" onclick="toggleDetailBookmark()">★ 收藏</button>
+          <button class="act-icon-btn" onclick="copyDetailMarkdown()">📋 Markdown</button>
+          <button class="act-icon-btn" onclick="copyDetailCitation()">📑 引用</button>
+          <button class="act-icon-btn" onclick="copyShareUrl()">🔗 分享</button>
+        </div>
+      </div>
+      <div class="reading-progress-track">
+        <div class="reading-progress-fill" id="readingProgressFill"></div>
+      </div>
     </div>
 
-    <div class="article-sheet" id="articleSheet">
-      <!-- Article injected dynamically -->
+    <!-- Main Broadside Article Sheet -->
+    <div class="article-sheet-canvas" id="articleSheetCanvas">
+      <!-- Dynamically injected -->
     </div>
   </article>
+
 </main>
 
-<div class="toast" id="toast">已复制链接</div>
+<!-- FOOTER -->
+<footer class="site-broadside-footer">
+  <div class="footer-inner">
+    <div>素材观察报 (THE MATERIAL CHRONICLE) · 严谨编校 · 真实出处核实</div>
+    <div style="font-family:var(--font-mono);">GitHub Pages 持续交付 / 快捷键: [/] 检索, [Esc] 返回</div>
+  </div>
+</footer>
+
+<!-- LIGHTBOX MODAL -->
+<div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
+  <img class="lightbox-img" id="lightboxImg" src="" alt="放大图">
+</div>
+
+<!-- TOAST -->
+<div class="toast-notice" id="toastNotice">已复制</div>
 
 <script>
+/* ═════════════════════════════════════════════════════════════════
+   CLIENT LOGIC & DATA LAYER
+   ═════════════════════════════════════════════════════════════════ */
 const DATA_URL = 'entries.json';
 let allArticles = [];
 let activeCategory = null;
+let activeStance = null;
+let onlyPinned = false;
 let searchQuery = '';
+let viewMode = 'grid'; // 'grid' | 'compact'
+let currentArticle = null;
 
-// Date string
+// Bookmarks (LocalStorage)
+let bookmarkedIds = new Set();
+try {
+  const saved = JSON.parse(localStorage.getItem('mc_bookmarks') || '[]');
+  bookmarkedIds = new Set(saved);
+} catch (e) {
+  bookmarkedIds = new Set();
+}
+
+function saveBookmarks() {
+  localStorage.setItem('mc_bookmarks', JSON.stringify([...bookmarkedIds]));
+  updatePinnedBadge();
+}
+
+function isBookmarked(id) {
+  return bookmarkedIds.has(String(id));
+}
+
+function toggleBookmark(id, e) {
+  if (e) e.stopPropagation();
+  const sid = String(id);
+  if (bookmarkedIds.has(sid)) {
+    bookmarkedIds.delete(sid);
+    showToast('已取消收藏');
+  } else {
+    bookmarkedIds.add(sid);
+    showToast('已添加到收藏');
+  }
+  saveBookmarks();
+  if (currentArticle && String(currentArticle.id) === sid) {
+    updateDetailBookmarkBtn();
+  }
+  renderFrontPage();
+}
+
+function updatePinnedBadge() {
+  document.getElementById('pinnedBadge').textContent = bookmarkedIds.size;
+  const btn = document.getElementById('pinnedCountBtn');
+  if (onlyPinned) {
+    btn.classList.add('active');
+  } else {
+    btn.classList.remove('active');
+  }
+}
+
+function toggleFilterPinned() {
+  onlyPinned = !onlyPinned;
+  updatePinnedBadge();
+  renderFrontPage();
+}
+
+// Date init
 (function initDate() {
   const d = new Date();
   const weekDays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
-  const dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${weekDays[d.getDay()]} · 深度素材观察`;
+  const dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${weekDays[d.getDay()]} · 深度素材特刊`;
   document.getElementById('currentDateStr').textContent = dateStr;
 })();
 
-// Theme
+// Theme management
 function initTheme() {
-  const saved = localStorage.getItem('news_theme');
+  const saved = localStorage.getItem('mc_theme');
   if (saved) {
     document.documentElement.setAttribute('data-theme', saved);
   } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -650,12 +1061,12 @@ function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('news_theme', next);
+  localStorage.setItem('mc_theme', next);
   updateThemeBtn();
 }
 function updateThemeBtn() {
   const cur = document.documentElement.getAttribute('data-theme');
-  document.getElementById('themeBtn').textContent = cur === 'dark' ? '☀️ 切换浅色' : '🌙 切换深色';
+  document.getElementById('themeBtn').textContent = cur === 'dark' ? '☀️ 浅色报版' : '🌙 夜间墨版';
 }
 initTheme();
 
@@ -674,7 +1085,7 @@ function formatDate(iso) {
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
+  const t = document.getElementById('toastNotice');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
@@ -703,8 +1114,9 @@ function openArticle(id) {
 }
 
 function showFrontPage() {
+  currentArticle = null;
   document.getElementById('frontPageView').style.display = 'block';
-  document.getElementById('articleView').classList.remove('active');
+  document.getElementById('articleViewport').classList.remove('active');
   renderFrontPage();
 }
 
@@ -714,13 +1126,26 @@ function showArticleDetail(id) {
     goHome();
     return;
   }
+  currentArticle = article;
   document.getElementById('frontPageView').style.display = 'none';
-  const v = document.getElementById('articleView');
+  const v = document.getElementById('articleViewport');
   v.classList.add('active');
   renderArticleDetail(article);
+  updateDetailBookmarkBtn();
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
-// Data loading
+// View Mode Toggle
+function setViewMode(mode) {
+  viewMode = mode;
+  document.getElementById('btnViewGrid').classList.toggle('active', mode === 'grid');
+  document.getElementById('btnViewCompact').classList.toggle('active', mode === 'compact');
+  document.getElementById('storiesGrid').style.display = mode === 'grid' ? 'grid' : 'none';
+  document.getElementById('compactStreamWrap').classList.toggle('active', mode === 'compact');
+  renderFrontPage();
+}
+
+// Data fetch
 async function loadData() {
   try {
     const res = await fetch(DATA_URL + '?t=' + Date.now());
@@ -728,19 +1153,21 @@ async function loadData() {
   } catch (e) {
     allArticles = [];
   }
-  document.getElementById('articleCountBadge').textContent = `已收录 ${allArticles.length} 篇报道`;
+  updatePinnedBadge();
   buildCategoryNav();
+  buildMechanismBadges();
   route();
 }
 
+// Categories Nav
 function buildCategoryNav() {
   const catSet = new Set();
   allArticles.forEach(a => (a.tags || []).forEach(t => catSet.add(t)));
   const list = document.getElementById('navCategoryList');
-  let html = `<span class="nav-item ${activeCategory === null ? 'active' : ''}" onclick="filterCategory(null)">全部要闻</span>`;
+  let html = `<span class="nav-pill ${activeCategory === null ? 'active' : ''}" onclick="filterCategory(null)">全部要闻</span>`;
   catSet.forEach(cat => {
     const isActive = activeCategory === cat;
-    html += `<span class="nav-item ${isActive ? 'active' : ''}" onclick="filterCategory('${escapeHtml(cat)}')">${escapeHtml(cat)}</span>`;
+    html += `<span class="nav-pill ${isActive ? 'active' : ''}" onclick="filterCategory('${escapeHtml(cat)}')">${escapeHtml(cat)}</span>`;
   });
   list.innerHTML = html;
 }
@@ -751,18 +1178,84 @@ function filterCategory(cat) {
   renderFrontPage();
 }
 
-document.getElementById('searchInput').addEventListener('input', function(e) {
-  searchQuery = e.target.value.trim().toLowerCase();
+// Mechanism Badges
+function buildMechanismBadges() {
+  const stances = new Set();
+  allArticles.forEach(a => { if (a.stance) stances.add(a.stance); });
+  const wrap = document.getElementById('mechBadgesWrap');
+  if (stances.size === 0) {
+    document.getElementById('mechanismBanner').style.display = 'none';
+    return;
+  }
+  let html = '';
+  stances.forEach(st => {
+    const isAct = activeStance === st;
+    html += `<span class="mech-badge" style="${isAct ? 'background:var(--accent-navy); color:#fff;' : ''}" onclick="filterStance('${escapeHtml(st)}')">${escapeHtml(st)}</span>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function filterStance(st) {
+  activeStance = activeStance === st ? null : st;
+  buildMechanismBadges();
   renderFrontPage();
+}
+
+// Search Logic (Multi-term AND match with debounce)
+let searchTimer = null;
+const searchInput = document.getElementById('searchInput');
+const searchClearBtn = document.getElementById('searchClearBtn');
+
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  searchClearBtn.classList.toggle('visible', e.target.value.length > 0);
+  searchTimer = setTimeout(() => {
+    searchQuery = e.target.value.trim().toLowerCase();
+    renderFrontPage();
+  }, 120);
 });
 
-// Front Page Render
+function clearSearch() {
+  searchInput.value = '';
+  searchQuery = '';
+  searchClearBtn.classList.remove('visible');
+  renderFrontPage();
+}
+
+// Keyboard Shortcuts: '/' to search, 'Esc' to close/back
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+  }
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('lightboxModal');
+    if (modal.classList.contains('active')) {
+      closeLightbox();
+      return;
+    }
+    if (document.getElementById('articleViewport').classList.contains('active')) {
+      goHome();
+    }
+  }
+});
+
+// Front Page Renderer
 function renderFrontPage() {
   let list = allArticles;
+
   if (activeCategory) {
     list = list.filter(a => (a.tags || []).includes(activeCategory));
   }
+  if (activeStance) {
+    list = list.filter(a => a.stance === activeStance);
+  }
+  if (onlyPinned) {
+    list = list.filter(a => isBookmarked(a.id));
+  }
   if (searchQuery) {
+    const terms = searchQuery.split(/\s+/).filter(Boolean);
     list = list.filter(a => {
       const corpus = (
         a.title + ' ' +
@@ -770,23 +1263,36 @@ function renderFrontPage() {
         (a.background || '') + ' ' +
         (a.analysis || '') + ' ' +
         (a.comment || '') + ' ' +
+        (a.stance || '') + ' ' +
         (a.points || []).join(' ') + ' ' +
         (a.tags || []).join(' ')
       ).toLowerCase();
-      return corpus.includes(searchQuery);
+      return terms.every(t => corpus.includes(t));
     });
   }
 
-  const summary = document.getElementById('matchSummary');
-  summary.textContent = `共呈现 ${list.length} 篇事实报道` + (activeCategory ? ` · 专栏「${activeCategory}」` : '');
+  // Update summary header
+  let hint = `共收录 ${allArticles.length} 条事实报道 · 当前呈现 ${list.length} 条`;
+  if (onlyPinned) hint += ' (仅显示收藏)';
+  if (activeCategory) hint += ` · 栏目「${activeCategory}」`;
+  if (activeStance) hint += ` · 机制「${activeStance}」`;
+  if (searchQuery) hint += ` · 搜索关键词「${searchQuery}」`;
+  document.getElementById('matchSummaryHint').textContent = hint;
 
-  const frontLayout = document.getElementById('frontLayout');
-  const moreSection = document.getElementById('moreSection');
-  const newsGrid = document.getElementById('newsGrid');
+  const layout = document.getElementById('editorialLayout');
+  const streamSection = document.getElementById('archiveStreamSection');
+  const storiesGrid = document.getElementById('storiesGrid');
+  const compactList = document.getElementById('compactItemsList');
 
   if (list.length === 0) {
-    frontLayout.innerHTML = '<div style="grid-column:1/-1; padding:60px 0; text-align:center; color:var(--text-muted); font-size:15px;">未找到匹配的报道内容</div>';
-    moreSection.style.display = 'none';
+    layout.innerHTML = `
+      <div class="empty-box" style="grid-column:1/-1;">
+        <div class="empty-title">未找到匹配的报道或素材条目</div>
+        <p>可以尝试缩减搜索词或清除分类筛选条件。</p>
+        <button class="reset-btn" onclick="resetAllFilters()">清除所有筛选条件</button>
+      </div>
+    `;
+    streamSection.style.display = 'none';
     return;
   }
 
@@ -795,31 +1301,45 @@ function renderFrontPage() {
   const secondary = sorted.slice(1, 3);
   const remaining = sorted.slice(3);
 
-  // Render Lead Card
+  // Render Lead Broadside
+  const leadStarred = isBookmarked(lead.id);
+  const leadFirstPoint = (lead.points && lead.points[0]) ? lead.points[0] : '';
   let leadHtml = `
-    <div class="lead-story" onclick="openArticle('${lead.id}')">
-      <div class="lead-kicker">
-        <span>● 特别观察</span>
-        <span>/</span>
-        <span>${escapeHtml(lead.stance || '事实剖析')}</span>
+    <div class="lead-broadside" onclick="openArticle('${lead.id}')">
+      <div class="lead-kicker-row">
+        <span class="kicker-tag">● 头条深度观察 / ${escapeHtml(lead.stance || '事实剖析')}</span>
+        <button class="bookmark-star-btn ${leadStarred ? 'bookmarked' : ''}" title="收藏条目" onclick="toggleBookmark('${lead.id}', event)">
+          ${leadStarred ? '★' : '☆'}
+        </button>
       </div>
   `;
   if (lead.image) {
     leadHtml += `
-      <div class="lead-image-wrap">
-        <img class="lead-image" src="${escapeHtml(lead.image)}" alt="${escapeHtml(lead.title)}" loading="lazy">
+      <div class="lead-img-box">
+        <img class="lead-img" src="${escapeHtml(lead.image)}" alt="${escapeHtml(lead.title)}" loading="lazy">
       </div>
     `;
   }
   leadHtml += `
       <h2 class="lead-headline">${escapeHtml(lead.title)}</h2>
       <p class="lead-deck">${escapeHtml(lead.summary || lead.comment || '')}</p>
-      <div class="lead-byline">
+  `;
+  if (leadFirstPoint) {
+    leadHtml += `
+      <div class="lead-facts-preview">
+        <div class="lead-facts-title">📌 关键核查事实速览</div>
+        <div class="lead-facts-item">${escapeHtml(leadFirstPoint)}</div>
+      </div>
+    `;
+  }
+  leadHtml += `
+      <div class="lead-footer-row">
         <div>
-          <span class="news-badge">${escapeHtml((lead.tags || [])[0] || '头条')}</span>
-          <span style="margin-left:8px;">${formatDate(lead.time)}</span>
+          <span>${formatDate(lead.time)}</span>
+          <span style="margin: 0 6px; opacity:0.4;">|</span>
+          <span>${escapeHtml((lead.tags || [])[0] || '要闻')}</span>
         </div>
-        <span class="read-more-link">阅读完整报道 →</span>
+        <span class="read-action-link">阅读完整剖析 →</span>
       </div>
     </div>
   `;
@@ -828,104 +1348,138 @@ function renderFrontPage() {
   let secHtml = `<div class="secondary-column">`;
   if (secondary.length > 0) {
     secondary.forEach(sec => {
+      const secStarred = isBookmarked(sec.id);
       secHtml += `
-        <div class="sec-story" onclick="openArticle('${sec.id}')">
-          <div class="sec-content">
-            <div class="sec-kicker">${escapeHtml((sec.tags || [])[0] || '要闻')} · ${escapeHtml(sec.stance || '观察')}</div>
-            <h3 class="sec-headline">${escapeHtml(sec.title)}</h3>
-            <p class="sec-snippet">${escapeHtml(sec.summary || sec.comment || '')}</p>
-            <div class="sec-time">${formatDate(sec.time)}</div>
+        <div class="sec-card" onclick="openArticle('${sec.id}')">
+          <div class="sec-header">
+            <span class="sec-tag">${escapeHtml((sec.tags || [])[0] || '专题')} · ${escapeHtml(sec.stance || '观察')}</span>
+            <button class="bookmark-star-btn ${secStarred ? 'bookmarked' : ''}" title="收藏条目" onclick="toggleBookmark('${sec.id}', event)">
+              ${secStarred ? '★' : '☆'}
+            </button>
           </div>
+          <h3 class="sec-headline">${escapeHtml(sec.title)}</h3>
+          <p class="sec-deck">${escapeHtml(sec.summary || sec.comment || '')}</p>
+          <div class="sec-meta-footer">
+            <span>${formatDate(sec.time)}</span>
+            <span style="color:var(--accent-red); font-weight:700;">查看详情 →</span>
+          </div>
+        </div>
       `;
-      if (sec.image) {
-        secHtml += `<img class="sec-thumb" src="${escapeHtml(sec.image)}" alt="${escapeHtml(sec.title)}" loading="lazy">`;
-      }
-      secHtml += `</div>`;
     });
   } else {
     secHtml += `
-      <div class="sec-story" style="background:var(--paper-subtle); border-style:dashed;">
-        <div class="sec-content">
-          <div class="sec-kicker">投稿中心</div>
-          <h3 class="sec-headline">更多前沿素材持续编校入库中</h3>
-          <p class="sec-snippet">通过机器人会话投递心跳素材，系统将自动提炼背景要点并在此刊发。</p>
+      <div class="sec-card" style="background:var(--bg-subtle); border-style:dashed;">
+        <div class="sec-header">
+          <span class="sec-tag">编校投稿</span>
         </div>
+        <h3 class="sec-headline">更多前沿素材持续编校入库</h3>
+        <p class="sec-deck">通过机器人会话投递心跳素材，系统将自动提炼背景要点、底层机制与可迁移观点，在此刊发归档。</p>
       </div>
     `;
   }
   secHtml += `</div>`;
 
-  frontLayout.innerHTML = leadHtml + secHtml;
+  layout.innerHTML = leadHtml + secHtml;
 
-  // Render More Grid
-  if (remaining.length > 0) {
-    moreSection.style.display = 'block';
-    newsGrid.innerHTML = remaining.map(item => `
-      <div class="grid-card" onclick="openArticle('${item.id}')">
-        ${item.image ? `<div class="grid-card-thumb-wrap"><img class="grid-card-thumb" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy"></div>` : ''}
-        <div style="font-size:11px; font-weight:700; color:var(--news-blue); margin-bottom:6px;">${escapeHtml((item.tags || [])[0] || '快讯')} · ${escapeHtml(item.stance || '动态')}</div>
-        <div class="grid-card-title">${escapeHtml(item.title)}</div>
-        <div class="grid-card-desc">${escapeHtml(item.summary || item.comment || '')}</div>
-        <div class="grid-card-footer">
+  // Stream Section
+  document.getElementById('streamStats').textContent = `呈现 ${sorted.length} 篇报道`;
+  streamSection.style.display = 'block';
+
+  // Grid Mode Content
+  storiesGrid.innerHTML = sorted.map(item => {
+    const isSt = isBookmarked(item.id);
+    return `
+      <div class="stream-card" onclick="openArticle('${item.id}')">
+        ${item.image ? `<div class="stream-card-thumb-wrap"><img class="stream-card-thumb" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy"></div>` : ''}
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:11px; font-weight:700; color:var(--accent-navy); font-family:var(--font-mono);">${escapeHtml((item.tags || [])[0] || '档案')} · ${escapeHtml(item.stance || '观察')}</span>
+          <button class="bookmark-star-btn ${isSt ? 'bookmarked' : ''}" onclick="toggleBookmark('${item.id}', event)">${isSt ? '★' : '☆'}</button>
+        </div>
+        <div class="stream-card-title">${escapeHtml(item.title)}</div>
+        <div class="stream-card-desc">${escapeHtml(item.summary || item.comment || '')}</div>
+        <div class="stream-card-footer">
           <span>${formatDate(item.time)}</span>
-          <span style="color:var(--news-red); font-weight:600;">阅读正文 →</span>
+          <span style="color:var(--accent-red); font-weight:700;">阅读正文 →</span>
         </div>
       </div>
-    `).join('');
-  } else {
-    moreSection.style.display = 'none';
-  }
+    `;
+  }).join('');
+
+  // Compact Mode Content
+  compactList.innerHTML = sorted.map(item => `
+    <div class="compact-item" onclick="openArticle('${item.id}')">
+      <div class="compact-date">${formatDate(item.time)}</div>
+      <div class="compact-title">${escapeHtml(item.title)}</div>
+      <div class="compact-stance">${escapeHtml(item.stance || '观察')} · ${(item.points || []).length}个要点</div>
+      <div class="compact-action">查看正文 →</div>
+    </div>
+  `).join('');
 }
 
-// Article Detail Page Render
+function resetAllFilters() {
+  activeCategory = null;
+  activeStance = null;
+  onlyPinned = false;
+  searchQuery = '';
+  searchInput.value = '';
+  searchClearBtn.classList.remove('visible');
+  buildCategoryNav();
+  buildMechanismBadges();
+  updatePinnedBadge();
+  renderFrontPage();
+}
+
+// ── Article Detail View Renderer ──
 function renderArticleDetail(art) {
-  const sheet = document.getElementById('articleSheet');
+  const canvas = document.getElementById('articleSheetCanvas');
   const tags = art.tags || [];
   const points = art.points || [];
 
-  document.getElementById('artBreadcrumbs').textContent =
-    `要闻中心 > ${tags[0] || '深度专栏'} > ${art.title}`;
+  document.getElementById('stickyBreadcrumbs').textContent =
+    `要闻中心 > ${tags[0] || '深度专栏'} > ${art.title.slice(0, 16)}…`;
 
   let html = `
-    <div class="art-kicker">
-      <span>● 深度专稿</span>
+    <div class="art-meta-kicker">
+      <span>● 特约深度专稿</span>
       <span>/</span>
       <span>${escapeHtml(art.stance || '事实剖析')}</span>
     </div>
-    <h1 class="art-headline">${escapeHtml(art.title)}</h1>
+    <h1 class="art-headline-title">${escapeHtml(art.title)}</h1>
   `;
 
   if (art.summary) {
-    html += `<div class="art-deck">${escapeHtml(art.summary)}</div>`;
+    html += `<div class="art-deck-quote">“${escapeHtml(art.summary)}”</div>`;
   }
 
   html += `
-    <div class="art-byline-box">
+    <div class="art-byline-banner">
       <div>
-        <span class="byline-author">素材观察报 · 观察员电</span>
-        <span style="margin: 0 8px; opacity:0.5;">|</span>
+        <span class="byline-staff">素材观察报 · 观察员电</span>
+        <span style="margin: 0 8px; opacity:0.4;">|</span>
         <span>发稿时间：${formatDate(art.time)}</span>
       </div>
-      <div class="byline-source">
-        ${art.source ? `<a href="${escapeHtml(art.source)}" target="_blank" rel="noopener">来源出处：${escapeHtml(art.source)} ↗</a>` : '特约观察专稿'}
+      <div>
+        ${art.source ? `<a class="byline-origin-link" href="${escapeHtml(art.source)}" target="_blank" rel="noopener">查验原始来源 ↗</a>` : '现场素材专稿'}
       </div>
     </div>
   `;
 
   if (art.image) {
     html += `
-      <div class="art-featured-image">
-        <img class="art-img" src="${escapeHtml(art.image)}" alt="${escapeHtml(art.title)}">
-        <div class="art-caption">报道配图 · 现场素材核验原图</div>
+      <div class="art-main-illustration">
+        <div class="art-photo-wrap" onclick="openLightbox('${escapeHtml(art.image)}')">
+          <img class="art-photo" src="${escapeHtml(art.image)}" alt="${escapeHtml(art.title)}">
+        </div>
+        <div class="art-photo-caption">现场报道核实配图 · 点击可放大全屏查验</div>
       </div>
     `;
   }
 
   if (points.length > 0) {
     html += `
-      <div class="factbox">
-        <div class="factbox-title">📌 新闻事实核查与关键要点</div>
-        <ul class="factbox-list">
+      <div class="art-factbox">
+        <div class="factbox-header-title">📌 新闻事实核查与核心数据对照</div>
+        <ul class="factbox-points-list">
           ${points.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
         </ul>
       </div>
@@ -934,59 +1488,144 @@ function renderArticleDetail(art) {
 
   if (art.background) {
     html += `
-      <h3 class="news-subhead">事件背景与前因核实</h3>
-      <div class="art-body-text">${escapeHtml(art.background)}</div>
+      <h3 class="news-sub-heading">事件背景与前因核查</h3>
+      <div class="art-prose-text">${escapeHtml(art.background)}</div>
     `;
   }
 
   if (art.analysis) {
     html += `
-      <h3 class="news-subhead">深度机制拆解与多维剖析</h3>
-      <div class="art-body-text">${escapeHtml(art.analysis)}</div>
+      <h3 class="news-sub-heading">深度机制拆解与底层规律</h3>
+      <div class="art-prose-text">${escapeHtml(art.analysis)}</div>
     `;
   }
 
   if (art.quote) {
     html += `
-      <div class="art-pullquote">
-        <div class="art-pullquote-quote">${escapeHtml(art.quote)}</div>
-        <div class="art-pullquote-source">— 关键言论现场原声</div>
+      <div class="editorial-pullquote">
+        <div class="pullquote-verbatim">${escapeHtml(art.quote)}</div>
+        <div class="pullquote-attribution">— 现场核心言论原声</div>
       </div>
     `;
   }
 
   if (art.comment) {
     html += `
-      <div class="commentary-box">
-        <div class="commentary-header">观察员手记 / 社论视角</div>
-        <div class="commentary-text">${escapeHtml(art.comment).replace(/\n/g, '<br>')}</div>
+      <div class="op-ed-box">
+        <div class="op-ed-label">观察员手记 / 社论视角</div>
+        <div class="op-ed-body">${escapeHtml(art.comment).replace(/\n/g, '<br>')}</div>
       </div>
     `;
   }
 
+  // Productivity Toolbox
   html += `
-    <div class="art-footer-actions">
-      <div class="art-tags">
-        ${tags.map(t => `<span class="art-tag-badge"># ${escapeHtml(t)}</span>`).join('')}
+    <div class="productivity-panel">
+      <div class="toolbox-title">
+        <span>⚙️ 素材知识复用工具箱</span>
+        <span style="font-size:11px; opacity:0.6;">RESEARCH & CITATION</span>
       </div>
-      <div>
-        <button class="share-btn" onclick="copyShareLink('${escapeHtml(art.title)}')">📋 分享本篇报道</button>
+      <div class="toolbox-grid">
+        <button class="toolbox-action-btn" onclick="copyDetailCitation()">📑 复制 APA 媒体引用格式</button>
+        <button class="toolbox-action-btn" onclick="copyDetailMarkdown()">📋 复制结构化 Markdown</button>
+        <button class="toolbox-action-btn" onclick="copyFactBullets()">📌 复制事实要点纯文本</button>
+        <button class="toolbox-action-btn" onclick="copyShareUrl()">🔗 复制本篇直链地址</button>
       </div>
     </div>
   `;
 
-  sheet.innerHTML = html;
+  // Related Stories Section
+  const related = allArticles.filter(a => String(a.id) !== String(art.id)).slice(0, 3);
+  if (related.length > 0) {
+    html += `
+      <div class="related-section">
+        <div class="related-title">延伸相关报道与关联案例</div>
+        <div class="related-cards-grid">
+          ${related.map(r => `
+            <div class="rel-mini-card" onclick="openArticle('${r.id}')">
+              <div class="rel-tag">${escapeHtml((r.tags || [])[0] || '关联')} · ${escapeHtml(r.stance || '动态')}</div>
+              <div class="rel-title">${escapeHtml(r.title)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  canvas.innerHTML = html;
 }
 
-function copyShareLink(title) {
-  const text = `${title} - 素材观察报\n${window.location.href}`;
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('报道链接已复制');
-  }).catch(() => {
-    showToast('复制失败');
-  });
+// Reading Progress Listener
+window.addEventListener('scroll', () => {
+  const bar = document.getElementById('readingProgressFill');
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  if (h > 0) {
+    const pct = Math.min(100, Math.max(0, (window.scrollY / h) * 100));
+    bar.style.width = pct + '%';
+  }
+});
+
+// Toolbox Functions
+function updateDetailBookmarkBtn() {
+  const btn = document.getElementById('detailBookmarkBtn');
+  if (!currentArticle) return;
+  const isSt = isBookmarked(currentArticle.id);
+  btn.classList.toggle('active', isSt);
+  btn.textContent = isSt ? '★ 已收藏' : '☆ 收藏本篇';
 }
 
+function toggleDetailBookmark() {
+  if (!currentArticle) return;
+  toggleBookmark(currentArticle.id);
+}
+
+function copyDetailCitation() {
+  if (!currentArticle) return;
+  const year = new Date(currentArticle.time).getFullYear();
+  const citation = `素材观察报. (${year}). ${currentArticle.title}. 取自 ${window.location.href}`;
+  navigator.clipboard.writeText(citation).then(() => showToast('APA 引用格式已复制'));
+}
+
+function copyDetailMarkdown() {
+  if (!currentArticle) return;
+  let md = `# ${currentArticle.title}\n\n`;
+  if (currentArticle.summary) md += `> ${currentArticle.summary}\n\n`;
+  if (currentArticle.points && currentArticle.points.length > 0) {
+    md += `## 核心事实\n`;
+    currentArticle.points.forEach(p => md += `- ${p}\n`);
+    md += `\n`;
+  }
+  if (currentArticle.background) md += `## 事件背景\n${currentArticle.background}\n\n`;
+  if (currentArticle.analysis) md += `## 机制拆解\n${currentArticle.analysis}\n\n`;
+  if (currentArticle.comment) md += `## 观察手记\n${currentArticle.comment}\n\n`;
+  md += `来源出处：${currentArticle.source || '现场观察'}\n链接：${window.location.href}\n`;
+  navigator.clipboard.writeText(md).then(() => showToast('Markdown 内容已复制'));
+}
+
+function copyFactBullets() {
+  if (!currentArticle || !currentArticle.points) return;
+  const text = currentArticle.points.map(p => `• ${p}`).join('\n');
+  navigator.clipboard.writeText(text).then(() => showToast('事实要点已复制'));
+}
+
+function copyShareUrl() {
+  if (!currentArticle) return;
+  const text = `${currentArticle.title} - 素材观察报\n${window.location.href}`;
+  navigator.clipboard.writeText(text).then(() => showToast('文章分享链接已复制'));
+}
+
+// Lightbox
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightboxModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightboxModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Boot
 loadData();
 </script>
 </body>
