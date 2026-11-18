@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>素材归档站 · 观察与思考</title>
+<title>素材归档站 · 深度观察与思考</title>
 <style>
 :root {
   --bg: #0d1117;
@@ -13,6 +13,7 @@
   --border: #30363d;
   --text: #e6edf3;
   --text-secondary: #8b949e;
+  --text-muted: #6e7681;
   --accent: #58a6ff;
   --accent-glow: rgba(88, 166, 255, 0.15);
   --tag-bg: #1f6feb26;
@@ -20,12 +21,11 @@
   --tag-active-bg: #1f6feb;
   --tag-active-text: #ffffff;
   --quote-bg: rgba(88,166,255,0.06);
-  --points-bg: rgba(255,255,255,0.03);
+  --section-bg: rgba(255,255,255,0.025);
   --gradient-start: #58a6ff;
   --gradient-end: #bc8cff;
   --shadow: 0 4px 20px rgba(0,0,0,0.3);
 
-  /* Stance Colors */
   --stance-agree: #238636;
   --stance-oppose: #da3633;
   --stance-watch: #d29922;
@@ -41,6 +41,7 @@
   --border: #d0d7de;
   --text: #1f2328;
   --text-secondary: #656d76;
+  --text-muted: #8c959f;
   --accent: #0969da;
   --accent-glow: rgba(9, 105, 218, 0.12);
   --tag-bg: #ddf4ff;
@@ -48,7 +49,7 @@
   --tag-active-bg: #0969da;
   --tag-active-text: #ffffff;
   --quote-bg: #f6f8fa;
-  --points-bg: #f8fafc;
+  --section-bg: #f8fafc;
   --gradient-start: #0969da;
   --gradient-end: #8250df;
   --shadow: 0 4px 20px rgba(140,149,159,0.15);
@@ -79,7 +80,7 @@ header {
   padding: 14px 0;
 }
 .header-inner {
-  max-width: 820px; margin: 0 auto; padding: 0 20px;
+  max-width: 840px; margin: 0 auto; padding: 0 20px;
   display: flex; align-items: center; justify-content: space-between;
 }
 .site-title {
@@ -87,8 +88,7 @@ header {
   display: flex; align-items: center; gap: 8px;
   background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  cursor: pointer;
-  user-select: none;
+  cursor: pointer; user-select: none;
 }
 .header-actions { display: flex; align-items: center; gap: 12px; }
 .theme-btn {
@@ -104,12 +104,12 @@ header {
 }
 .theme-btn:hover { border-color: var(--accent); }
 
-.container { max-width: 820px; margin: 0 auto; padding: 24px 20px 80px; }
+.container { max-width: 840px; margin: 0 auto; padding: 24px 20px 80px; }
 
 /* Dashboard banner */
 .dashboard {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
   margin-bottom: 24px;
 }
@@ -172,14 +172,13 @@ header {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 22px 24px;
-  margin-bottom: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
   box-shadow: var(--shadow);
   transition: border-color 0.25s, transform 0.15s;
 }
 .entry:hover {
   border-color: var(--card-hover-border);
-  transform: translateY(-2px);
 }
 .entry-header {
   display: flex; align-items: flex-start; justify-content: space-between;
@@ -187,7 +186,7 @@ header {
 }
 .entry-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap; }
 .entry-title {
-  font-size: 18px; font-weight: 600; line-height: 1.4;
+  font-size: 19px; font-weight: 700; line-height: 1.4;
   color: var(--text);
 }
 .entry-time {
@@ -195,7 +194,6 @@ header {
   white-space: nowrap; padding-top: 3px;
 }
 
-/* Stance badge */
 .stance-badge {
   font-size: 11px; font-weight: 600;
   padding: 2px 8px; border-radius: 6px;
@@ -209,18 +207,18 @@ header {
 .stance-default { background: var(--stance-default); }
 
 .entry-summary {
-  font-size: 14px; color: var(--text-secondary);
-  margin-bottom: 14px;
-  padding: 10px 14px;
+  font-size: 14.5px; color: var(--text-secondary);
+  margin-bottom: 16px;
+  padding: 12px 16px;
   background: var(--quote-bg);
   border-left: 3px solid var(--accent);
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
   line-height: 1.6;
 }
 
 /* Bullet points (Takeaways) */
 .entry-points {
-  background: var(--points-bg);
+  background: var(--section-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 16px;
@@ -228,13 +226,13 @@ header {
 }
 .points-title {
   font-size: 12px; font-weight: 600; color: var(--text-secondary);
-  margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 8px; letter-spacing: 0.5px;
 }
 .points-list {
   list-style: none; display: flex; flex-direction: column; gap: 6px;
 }
 .points-list li {
-  font-size: 13.5px; line-height: 1.5; color: var(--text);
+  font-size: 13.5px; line-height: 1.55; color: var(--text);
   position: relative; padding-left: 18px;
 }
 .points-list li::before {
@@ -242,20 +240,62 @@ header {
   color: var(--accent); font-size: 18px;
 }
 
-/* My comment / Perspective */
-.entry-comment-box {
+/* Deep details collapsible */
+.deep-panel {
+  display: none;
+  margin-top: 16px; padding-top: 16px;
+  border-top: 1px dashed var(--border);
+  animation: fadeIn 0.25s ease-out;
+}
+.deep-panel.open { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detail-section {
   margin-bottom: 16px;
+  padding: 14px 16px;
+  background: var(--section-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.detail-title {
+  font-size: 13px; font-weight: 700; color: var(--accent);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.detail-content {
+  font-size: 14px; line-height: 1.7; color: var(--text);
+  white-space: pre-line;
+}
+
+.quote-box {
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  border-left: 3px solid var(--gradient-end);
+  background: var(--quote-bg);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  font-size: 14px; color: var(--text);
+}
+
+.entry-comment-box {
+  margin: 16px 0;
+  padding: 14px 16px;
+  background: rgba(88,166,255,0.05);
+  border-radius: 8px;
+  border: 1px solid var(--border);
 }
 .comment-label {
-  font-size: 12px; font-weight: 600; color: var(--accent);
-  margin-bottom: 4px; display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
 }
 .entry-comment {
-  font-size: 15px; line-height: 1.7; color: var(--text);
+  font-size: 14.5px; line-height: 1.7; color: var(--text);
 }
 
 .entry-image-box {
-  position: relative; margin-bottom: 16px; border-radius: 8px; overflow: hidden;
+  position: relative; margin: 16px 0; border-radius: 8px; overflow: hidden;
   max-height: 480px; background: var(--border);
 }
 .entry-image {
@@ -265,11 +305,22 @@ header {
 }
 .entry-image:hover { opacity: 0.95; }
 
+.toggle-details-btn {
+  background: none; border: 1px solid var(--accent);
+  color: var(--accent); border-radius: 20px;
+  padding: 5px 14px; font-size: 12.5px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  margin: 10px 0; transition: all 0.2s;
+}
+.toggle-details-btn:hover {
+  background: var(--accent-glow);
+}
+
 .entry-footer {
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; gap: 12px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--border);
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
   font-size: 13px;
 }
 .footer-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -319,7 +370,7 @@ header {
 
 @media (max-width: 600px) {
   .entry { padding: 18px; }
-  .entry-title { font-size: 16px; }
+  .entry-title { font-size: 17px; }
   .dashboard { grid-template-columns: 1fr 1fr; }
 }
 </style>
@@ -343,11 +394,11 @@ header {
       <div class="metric-value" id="metricTotal">0</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">标签分类</div>
+      <div class="metric-label">分类领域</div>
       <div class="metric-value" id="metricTags">0</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">最新更新</div>
+      <div class="metric-label">最近更新</div>
       <div class="metric-value" id="metricRecent" style="font-size:15px; padding-top:4px;">-</div>
     </div>
   </div>
@@ -357,7 +408,7 @@ header {
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
       <input type="text" class="search-box" id="searchBox"
-             placeholder="搜索标题、要点、观点或标签关键字…" autocomplete="off">
+             placeholder="搜索标题、背景、要点、深度分析或标签…" autocomplete="off">
     </div>
     <div class="tag-list" id="tagList"></div>
   </div>
@@ -377,6 +428,7 @@ header {
 const ENTRIES_URL = 'entries.json';
 let allEntries = [];
 let activeTag = null;
+let expandedEntries = new Set();
 
 function initTheme() {
   const saved = localStorage.getItem('site_theme');
@@ -418,7 +470,7 @@ function showToast(text) {
 function copyText(title, comment, source) {
   const content = `${title}\n\n${comment}${source ? '\n出处: ' + source : ''}`;
   navigator.clipboard.writeText(content).then(() => {
-    showToast('内容已复制到剪贴板');
+    showToast('卡片内容已复制');
   }).catch(() => {
     showToast('复制失败');
   });
@@ -433,11 +485,28 @@ function getStanceClass(stance) {
   return 'stance-default';
 }
 
+function toggleDetail(id) {
+  if (expandedEntries.has(id)) {
+    expandedEntries.delete(id);
+  } else {
+    expandedEntries.add(id);
+  }
+  const panel = document.getElementById('deep-' + id);
+  const btn = document.getElementById('btn-' + id);
+  if (panel && btn) {
+    const isNowOpen = expandedEntries.has(id);
+    panel.classList.toggle('open', isNowOpen);
+    btn.innerHTML = isNowOpen ? '📖 收起深度解读 ▲' : '📖 展开深度解读 ▼';
+  }
+}
+
 function renderEntry(e) {
   const tags = e.tags || [];
   const points = e.points || [];
   const stance = e.stance || '观察';
   const stanceClass = getStanceClass(stance);
+  const hasDeepContent = Boolean(e.background || e.analysis || e.quote);
+  const isExpanded = expandedEntries.has(e.id);
 
   let html = `<div class="entry" data-id="${e.id}">`;
 
@@ -470,6 +539,7 @@ function renderEntry(e) {
     html += `</div>`;
   }
 
+  // First-person take
   if (e.comment) {
     html += `<div class="entry-comment-box">`;
     html += `<div class="comment-label">💬 观察思考</div>`;
@@ -477,10 +547,38 @@ function renderEntry(e) {
     html += `</div>`;
   }
 
+  // Collapsible button & panel for rich background / analysis / quote
+  if (hasDeepContent) {
+    html += `<button class="toggle-details-btn" id="btn-${e.id}" onclick="toggleDetail('${e.id}')">${isExpanded ? '📖 收起深度解读 ▲' : '📖 展开深度解读 ▼'}</button>`;
+    html += `<div class="deep-panel ${isExpanded ? 'open' : ''}" id="deep-${e.id}">`;
+
+    if (e.background) {
+      html += `<div class="detail-section">`;
+      html += `<div class="detail-title">🧭 事件背景与前因后果</div>`;
+      html += `<div class="detail-content">${escapeHtml(e.background)}</div>`;
+      html += `</div>`;
+    }
+
+    if (e.analysis) {
+      html += `<div class="detail-section">`;
+      html += `<div class="detail-title">🔍 深度剖析与机制拆解</div>`;
+      html += `<div class="detail-content">${escapeHtml(e.analysis)}</div>`;
+      html += `</div>`;
+    }
+
+    if (e.quote) {
+      html += `<div class="quote-box">`;
+      html += `${escapeHtml(e.quote)}`;
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  }
+
   html += `<div class="entry-footer">`;
   html += `<div class="footer-left">`;
   if (e.source) {
-    html += `<a class="entry-source" href="${escapeHtml(e.source)}" target="_blank" rel="noopener">🔗 原文链接</a>`;
+    html += `<a class="entry-source" href="${escapeHtml(e.source)}" target="_blank" rel="noopener">🔗 原文出处</a>`;
   }
   tags.forEach(t => {
     html += `<span class="tag-pill ${activeTag === t ? 'active' : ''}" onclick="selectTag('${escapeHtml(t)}')">${escapeHtml(t)}</span>`;
@@ -575,7 +673,16 @@ function renderAll(query) {
   }
   if (q) {
     filtered = filtered.filter(e => {
-      const searchStr = (e.title + ' ' + (e.summary||'') + ' ' + (e.comment||'') + ' ' + (e.stance||'') + ' ' + (e.points||[]).join(' ') + ' ' + (e.tags||[]).join(' ')).toLowerCase();
+      const searchStr = (
+        e.title + ' ' +
+        (e.summary || '') + ' ' +
+        (e.background || '') + ' ' +
+        (e.analysis || '') + ' ' +
+        (e.comment || '') + ' ' +
+        (e.stance || '') + ' ' +
+        (e.points || []).join(' ') + ' ' +
+        (e.tags || []).join(' ')
+      ).toLowerCase();
       return searchStr.includes(q);
     });
   }
