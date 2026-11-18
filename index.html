@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>素材归档站</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --card-bg: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-secondary: #8b949e;
+  --accent: #58a6ff;
+  --tag-bg: #1f6feb33;
+  --tag-text: #58a6ff;
+  --gradient-start: #58a6ff;
+  --gradient-end: #bc8cff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+header {
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(16px);
+  background: rgba(13,17,23,0.85);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+.header-inner {
+  max-width: 760px; margin: 0 auto; padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.site-title {
+  font-size: 20px; font-weight: 700;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stats { font-size: 13px; color: var(--text-secondary); }
+
+.container { max-width: 760px; margin: 0 auto; padding: 24px 20px 80px; }
+
+.entry {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+.entry:hover { border-color: var(--accent); }
+
+.entry-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 12px; gap: 12px;
+}
+.entry-title {
+  font-size: 18px; font-weight: 600; line-height: 1.4;
+  flex: 1;
+}
+.entry-time {
+  font-size: 12px; color: var(--text-secondary);
+  white-space: nowrap; padding-top: 4px;
+}
+.entry-summary {
+  font-size: 14px; color: var(--text-secondary);
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: rgba(88,166,255,0.06);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+}
+.entry-comment {
+  font-size: 15px; line-height: 1.7;
+  margin-bottom: 14px;
+}
+.entry-image {
+  width: 100%; border-radius: 8px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+.entry-footer {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px;
+}
+.entry-source {
+  color: var(--accent); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.entry-source:hover { text-decoration: underline; }
+.entry-tag {
+  background: var(--tag-bg); color: var(--tag-text);
+  padding: 2px 10px; border-radius: 12px;
+  font-size: 12px;
+}
+
+.empty-state {
+  text-align: center; padding: 80px 20px;
+  color: var(--text-secondary);
+}
+.empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.4; }
+.empty-state p { font-size: 15px; }
+
+.search-box {
+  width: 100%; padding: 10px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 24px;
+  transition: border-color 0.2s;
+}
+.search-box:focus { border-color: var(--accent); }
+.search-box::placeholder { color: var(--text-secondary); }
+
+/* Lightbox */
+.lightbox {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.9); z-index: 999;
+  justify-content: center; align-items: center;
+  cursor: zoom-out;
+}
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 8px; }
+
+@media (max-width: 600px) {
+  .entry { padding: 16px; }
+  .entry-title { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="site-title">📡 素材归档站</div>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<div class="container">
+  <input type="text" class="search-box" id="searchBox"
+         placeholder="搜索标题、内容或标签…" autocomplete="off">
+  <div id="feed"></div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+const ENTRIES_URL = 'entries.json';
+
+function formatTime(iso) {
+  const d = new Date(iso);
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function renderEntry(e) {
+  let html = '<div class="entry" data-search="' +
+    escapeHtml((e.title + ' ' + e.summary + ' ' + e.comment + ' ' + (e.tags||[]).join(' ')).toLowerCase()) + '">';
+
+  html += '<div class="entry-header">';
+  html += '<div class="entry-title">' + escapeHtml(e.title) + '</div>';
+  html += '<div class="entry-time">' + formatTime(e.time) + '</div>';
+  html += '</div>';
+
+  if (e.summary) {
+    html += '<div class="entry-summary">' + escapeHtml(e.summary) + '</div>';
+  }
+
+  if (e.image) {
+    html += '<img class="entry-image" src="' + escapeHtml(e.image) +
+      '" alt="' + escapeHtml(e.title) + '" loading="lazy" onclick="openLightbox(this.src)">';
+  }
+
+  if (e.comment) {
+    html += '<div class="entry-comment">' + escapeHtml(e.comment).replace(/\n/g, '<br>') + '</div>';
+  }
+
+  html += '<div class="entry-footer">';
+  if (e.source) {
+    html += '<a class="entry-source" href="' + escapeHtml(e.source) +
+      '" target="_blank" rel="noopener">🔗 原文出处</a>';
+  }
+  if (e.tags) {
+    e.tags.forEach(t => {
+      html += '<span class="entry-tag">' + escapeHtml(t) + '</span>';
+    });
+  }
+  html += '</div></div>';
+  return html;
+}
+
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('active');
+}
+
+let allEntries = [];
+
+async function loadEntries() {
+  try {
+    const r = await fetch(ENTRIES_URL + '?t=' + Date.now());
+    allEntries = await r.json();
+  } catch (e) {
+    allEntries = [];
+  }
+  renderAll();
+}
+
+function renderAll(query) {
+  const feed = document.getElementById('feed');
+  const q = (query || '').toLowerCase().trim();
+  const filtered = q
+    ? allEntries.filter(e =>
+        (e.title + ' ' + e.summary + ' ' + e.comment + ' ' + (e.tags||[]).join(' '))
+          .toLowerCase().includes(q))
+    : allEntries;
+
+  document.getElementById('stats').textContent = filtered.length + ' 条素材';
+
+  if (filtered.length === 0) {
+    feed.innerHTML = '<div class="empty-state"><p>' +
+      (q ? '没有匹配的素材' : '还没有素材，等待投递中…') + '</p></div>';
+    return;
+  }
+
+  // newest first
+  feed.innerHTML = [...filtered].reverse().map(renderEntry).join('');
+}
+
+document.getElementById('searchBox').addEventListener('input', function() {
+  renderAll(this.value);
+});
+
+loadEntries();
+// Auto-refresh every 30s
+setInterval(loadEntries, 30000);
+</script>
+</body>
+</html>
