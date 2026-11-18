@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>素材归档站 · 深度观察与思考</title>
+<title>素材归档站 · 观察与思考</title>
 <style>
 :root {
   --bg: #0d1117;
@@ -13,7 +13,6 @@
   --border: #30363d;
   --text: #e6edf3;
   --text-secondary: #8b949e;
-  --text-muted: #6e7681;
   --accent: #58a6ff;
   --accent-glow: rgba(88, 166, 255, 0.15);
   --tag-bg: #1f6feb26;
@@ -41,7 +40,6 @@
   --border: #d0d7de;
   --text: #1f2328;
   --text-secondary: #656d76;
-  --text-muted: #8c959f;
   --accent: #0969da;
   --accent-glow: rgba(9, 105, 218, 0.12);
   --tag-bg: #ddf4ff;
@@ -175,14 +173,14 @@ header {
   padding: 24px;
   margin-bottom: 24px;
   box-shadow: var(--shadow);
-  transition: border-color 0.25s, transform 0.15s;
+  transition: border-color 0.25s;
 }
 .entry:hover {
   border-color: var(--card-hover-border);
 }
 .entry-header {
   display: flex; align-items: flex-start; justify-content: space-between;
-  margin-bottom: 12px; gap: 14px;
+  margin-bottom: 14px; gap: 14px;
 }
 .entry-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap; }
 .entry-title {
@@ -221,11 +219,11 @@ header {
   background: var(--section-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 14px 18px;
   margin-bottom: 16px;
 }
 .points-title {
-  font-size: 12px; font-weight: 600; color: var(--text-secondary);
+  font-size: 12px; font-weight: 700; color: var(--accent);
   margin-bottom: 8px; letter-spacing: 0.5px;
 }
 .points-list {
@@ -240,22 +238,10 @@ header {
   color: var(--accent); font-size: 18px;
 }
 
-/* Deep details collapsible */
-.deep-panel {
-  display: none;
-  margin-top: 16px; padding-top: 16px;
-  border-top: 1px dashed var(--border);
-  animation: fadeIn 0.25s ease-out;
-}
-.deep-panel.open { display: block; }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* Full direct sections */
 .detail-section {
   margin-bottom: 16px;
-  padding: 14px 16px;
+  padding: 14px 18px;
   background: var(--section-bg);
   border-radius: 8px;
   border: 1px solid var(--border);
@@ -265,7 +251,7 @@ header {
   margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
 }
 .detail-content {
-  font-size: 14px; line-height: 1.7; color: var(--text);
+  font-size: 14px; line-height: 1.75; color: var(--text);
   white-space: pre-line;
 }
 
@@ -277,12 +263,13 @@ header {
   border-radius: 0 8px 8px 0;
   font-style: italic;
   font-size: 14px; color: var(--text);
+  line-height: 1.6;
 }
 
 .entry-comment-box {
   margin: 16px 0;
-  padding: 14px 16px;
-  background: rgba(88,166,255,0.05);
+  padding: 14px 18px;
+  background: rgba(88,166,255,0.06);
   border-radius: 8px;
   border: 1px solid var(--border);
 }
@@ -304,17 +291,6 @@ header {
   transition: opacity 0.2s;
 }
 .entry-image:hover { opacity: 0.95; }
-
-.toggle-details-btn {
-  background: none; border: 1px solid var(--accent);
-  color: var(--accent); border-radius: 20px;
-  padding: 5px 14px; font-size: 12.5px; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
-  margin: 10px 0; transition: all 0.2s;
-}
-.toggle-details-btn:hover {
-  background: var(--accent-glow);
-}
 
 .entry-footer {
   display: flex; align-items: center; justify-content: space-between;
@@ -428,7 +404,6 @@ header {
 const ENTRIES_URL = 'entries.json';
 let allEntries = [];
 let activeTag = null;
-let expandedEntries = new Set();
 
 function initTheme() {
   const saved = localStorage.getItem('site_theme');
@@ -485,28 +460,11 @@ function getStanceClass(stance) {
   return 'stance-default';
 }
 
-function toggleDetail(id) {
-  if (expandedEntries.has(id)) {
-    expandedEntries.delete(id);
-  } else {
-    expandedEntries.add(id);
-  }
-  const panel = document.getElementById('deep-' + id);
-  const btn = document.getElementById('btn-' + id);
-  if (panel && btn) {
-    const isNowOpen = expandedEntries.has(id);
-    panel.classList.toggle('open', isNowOpen);
-    btn.innerHTML = isNowOpen ? '📖 收起深度解读 ▲' : '📖 展开深度解读 ▼';
-  }
-}
-
 function renderEntry(e) {
   const tags = e.tags || [];
   const points = e.points || [];
   const stance = e.stance || '观察';
   const stanceClass = getStanceClass(stance);
-  const hasDeepContent = Boolean(e.background || e.analysis || e.quote);
-  const isExpanded = expandedEntries.has(e.id);
 
   let html = `<div class="entry" data-id="${e.id}">`;
 
@@ -525,7 +483,7 @@ function renderEntry(e) {
   // Key Points
   if (points.length > 0) {
     html += `<div class="entry-points">`;
-    html += `<div class="points-title">📌 核心看点</div>`;
+    html += `<div class="points-title">📌 核心事实要点</div>`;
     html += `<ul class="points-list">`;
     points.forEach(p => {
       html += `<li>${escapeHtml(p)}</li>`;
@@ -533,13 +491,37 @@ function renderEntry(e) {
     html += `</ul></div>`;
   }
 
+  // Background context
+  if (e.background) {
+    html += `<div class="detail-section">`;
+    html += `<div class="detail-title">🧭 事件背景与起因</div>`;
+    html += `<div class="detail-content">${escapeHtml(e.background)}</div>`;
+    html += `</div>`;
+  }
+
+  // Deep Analysis
+  if (e.analysis) {
+    html += `<div class="detail-section">`;
+    html += `<div class="detail-title">🔍 深度剖析与机制拆解</div>`;
+    html += `<div class="detail-content">${escapeHtml(e.analysis)}</div>`;
+    html += `</div>`;
+  }
+
+  // Quote
+  if (e.quote) {
+    html += `<div class="quote-box">`;
+    html += `${escapeHtml(e.quote)}`;
+    html += `</div>`;
+  }
+
+  // Image
   if (e.image) {
     html += `<div class="entry-image-box">`;
     html += `<img class="entry-image" src="${escapeHtml(e.image)}" alt="${escapeHtml(e.title)}" loading="lazy" onerror="this.parentElement.style.display='none'" onclick="openLightbox(this.src)">`;
     html += `</div>`;
   }
 
-  // First-person take
+  // Comment / Take
   if (e.comment) {
     html += `<div class="entry-comment-box">`;
     html += `<div class="comment-label">💬 观察思考</div>`;
@@ -547,38 +529,10 @@ function renderEntry(e) {
     html += `</div>`;
   }
 
-  // Collapsible button & panel for rich background / analysis / quote
-  if (hasDeepContent) {
-    html += `<button class="toggle-details-btn" id="btn-${e.id}" onclick="toggleDetail('${e.id}')">${isExpanded ? '📖 收起深度解读 ▲' : '📖 展开深度解读 ▼'}</button>`;
-    html += `<div class="deep-panel ${isExpanded ? 'open' : ''}" id="deep-${e.id}">`;
-
-    if (e.background) {
-      html += `<div class="detail-section">`;
-      html += `<div class="detail-title">🧭 事件背景与前因后果</div>`;
-      html += `<div class="detail-content">${escapeHtml(e.background)}</div>`;
-      html += `</div>`;
-    }
-
-    if (e.analysis) {
-      html += `<div class="detail-section">`;
-      html += `<div class="detail-title">🔍 深度剖析与机制拆解</div>`;
-      html += `<div class="detail-content">${escapeHtml(e.analysis)}</div>`;
-      html += `</div>`;
-    }
-
-    if (e.quote) {
-      html += `<div class="quote-box">`;
-      html += `${escapeHtml(e.quote)}`;
-      html += `</div>`;
-    }
-
-    html += `</div>`;
-  }
-
   html += `<div class="entry-footer">`;
   html += `<div class="footer-left">`;
   if (e.source) {
-    html += `<a class="entry-source" href="${escapeHtml(e.source)}" target="_blank" rel="noopener">🔗 原文出处</a>`;
+    html += `<a class="entry-source" href="${escapeHtml(e.source)}" target="_blank" rel="noopener">🔗 原文链接</a>`;
   }
   tags.forEach(t => {
     html += `<span class="tag-pill ${activeTag === t ? 'active' : ''}" onclick="selectTag('${escapeHtml(t)}')">${escapeHtml(t)}</span>`;
