@@ -289,10 +289,9 @@ body {
   font-family: var(--font-mono); font-size: 11px; font-weight: 700;
   color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px;
 }
-.bookmark-star-btn {
-  background: none; border: none; font-size: 16px; color: var(--text-dim);
-  cursor: pointer; padding: 2px; transition: color 0.15s, transform 0.15s;
-}
+.bookmark-star-btn { font-size: 11px; font-weight: 700; font-family: var(--font-mono); border: 1px solid var(--border-rule); border-radius: var(--radius-sm); padding: 1px 6px; color: var(--text-dim); background: none; cursor: pointer; transition: all 0.15s; }
+.bookmark-star-btn:hover { border-color: var(--border-headline); color: var(--text-main); }
+.bookmark-star-btn.bookmarked { background: var(--border-headline); color: var(--text-inverse); border-color: var(--border-headline); }
 .bookmark-star-btn:hover { color: var(--accent-amber); transform: scale(1.15); }
 .bookmark-star-btn.bookmarked { color: var(--accent-amber); }
 
@@ -844,10 +843,10 @@ body {
     </div>
     <div class="aux-right">
       <button class="aux-btn" id="pinnedCountBtn" onclick="toggleFilterPinned()">
-        <span>★ 收藏</span>
+        <span>收藏</span>
         <span id="pinnedBadge" style="font-weight:700;">0</span>
       </button>
-      <button class="aux-btn" onclick="toggleTheme()" id="themeBtn">🌓 切换夜间</button>
+      <button class="aux-btn" onclick="toggleTheme()" id="themeBtn">深色模式</button>
     </div>
   </div>
 </div>
@@ -872,13 +871,13 @@ body {
       <div class="nav-actions-group">
         <!-- View Mode Switch -->
         <div class="view-mode-switch">
-          <button class="view-mode-btn active" id="btnViewGrid" onclick="setViewMode('grid')" title="报刊卡片排版">📰</button>
-          <button class="view-mode-btn" id="btnViewCompact" onclick="setViewMode('compact')" title="紧凑档案列表">🗂️</button>
+          <button class="view-mode-btn active" id="btnViewGrid" onclick="setViewMode('grid')" title="图文排版">图文</button>
+          <button class="view-mode-btn" id="btnViewCompact" onclick="setViewMode('compact')" title="紧凑列表">列表</button>
         </div>
 
         <!-- Search Box -->
         <div class="search-box-wrap">
-          <span class="search-icon-left">🔍</span>
+          <span class="search-icon-left">/</span>
           <input type="text" id="searchInput" class="search-input" placeholder="检索事实、机制或观点 (按 /)" autocomplete="off">
           <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()">×</button>
         </div>
@@ -904,7 +903,7 @@ body {
     <!-- Mechanism Highlights Strip -->
     <div class="mechanism-banner" id="mechanismBanner">
       <div class="mech-info">
-        <h4>💡 底层思维模型与机制分类</h4>
+        <h4>底层思维模型与机制分类</h4>
         <p>从事件中提炼可迁移的认知规律，点击快速筛选同类机制素材：</p>
       </div>
       <div class="mech-badges-wrap" id="mechBadgesWrap">
@@ -940,10 +939,10 @@ body {
         </button>
         <div class="sticky-breadcrumbs" id="stickyBreadcrumbs">要闻中心 > 深度观察</div>
         <div class="article-quick-actions">
-          <button class="act-icon-btn" id="detailBookmarkBtn" onclick="toggleDetailBookmark()">★ 收藏</button>
-          <button class="act-icon-btn" onclick="copyDetailMarkdown()">📋 Markdown</button>
-          <button class="act-icon-btn" onclick="copyDetailCitation()">📑 引用</button>
-          <button class="act-icon-btn" onclick="copyShareUrl()">🔗 分享</button>
+          <button class="act-icon-btn" id="detailBookmarkBtn" onclick="toggleDetailBookmark()">收藏</button>
+          <button class="act-icon-btn" onclick="copyDetailMarkdown()">Markdown</button>
+          <button class="act-icon-btn" onclick="copyDetailCitation()">引用格式</button>
+          <button class="act-icon-btn" onclick="copyShareUrl()">分享链接</button>
         </div>
       </div>
       <div class="reading-progress-track">
@@ -1066,7 +1065,7 @@ function toggleTheme() {
 }
 function updateThemeBtn() {
   const cur = document.documentElement.getAttribute('data-theme');
-  document.getElementById('themeBtn').textContent = cur === 'dark' ? '☀️ 浅色报版' : '🌙 夜间墨版';
+  document.getElementById('themeBtn').textContent = cur === 'dark' ? '浅色模式' : '深色模式';
 }
 initTheme();
 
@@ -1309,7 +1308,7 @@ function renderFrontPage() {
       <div class="lead-kicker-row">
         <span class="kicker-tag">● 头条深度观察 / ${escapeHtml(lead.stance || '事实剖析')}</span>
         <button class="bookmark-star-btn ${leadStarred ? 'bookmarked' : ''}" title="收藏条目" onclick="toggleBookmark('${lead.id}', event)">
-          ${leadStarred ? '★' : '☆'}
+          ${leadStarred ? '已收' : '收藏'}
         </button>
       </div>
   `;
@@ -1327,7 +1326,7 @@ function renderFrontPage() {
   if (leadFirstPoint) {
     leadHtml += `
       <div class="lead-facts-preview">
-        <div class="lead-facts-title">📌 关键核查事实速览</div>
+        <div class="lead-facts-title">关键核查事实速览</div>
         <div class="lead-facts-item">${escapeHtml(leadFirstPoint)}</div>
       </div>
     `;
@@ -1354,7 +1353,7 @@ function renderFrontPage() {
           <div class="sec-header">
             <span class="sec-tag">${escapeHtml((sec.tags || [])[0] || '专题')} · ${escapeHtml(sec.stance || '观察')}</span>
             <button class="bookmark-star-btn ${secStarred ? 'bookmarked' : ''}" title="收藏条目" onclick="toggleBookmark('${sec.id}', event)">
-              ${secStarred ? '★' : '☆'}
+              ${secStarred ? '已收' : '收藏'}
             </button>
           </div>
           <h3 class="sec-headline">${escapeHtml(sec.title)}</h3>
@@ -1393,7 +1392,7 @@ function renderFrontPage() {
         ${item.image ? `<div class="stream-card-thumb-wrap"><img class="stream-card-thumb" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy"></div>` : ''}
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <span style="font-size:11px; font-weight:700; color:var(--accent-navy); font-family:var(--font-mono);">${escapeHtml((item.tags || [])[0] || '档案')} · ${escapeHtml(item.stance || '观察')}</span>
-          <button class="bookmark-star-btn ${isSt ? 'bookmarked' : ''}" onclick="toggleBookmark('${item.id}', event)">${isSt ? '★' : '☆'}</button>
+          <button class="bookmark-star-btn ${isSt ? 'bookmarked' : ''}" onclick="toggleBookmark('${item.id}', event)">${isSt ? '已收' : '收藏'}</button>
         </div>
         <div class="stream-card-title">${escapeHtml(item.title)}</div>
         <div class="stream-card-desc">${escapeHtml(item.summary || item.comment || '')}</div>
@@ -1478,7 +1477,7 @@ function renderArticleDetail(art) {
   if (points.length > 0) {
     html += `
       <div class="art-factbox">
-        <div class="factbox-header-title">📌 新闻事实核查与核心数据对照</div>
+        <div class="factbox-header-title">新闻事实核查与核心数据对照</div>
         <ul class="factbox-points-list">
           ${points.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
         </ul>
@@ -1522,14 +1521,14 @@ function renderArticleDetail(art) {
   html += `
     <div class="productivity-panel">
       <div class="toolbox-title">
-        <span>⚙️ 素材知识复用工具箱</span>
+        <span>素材知识复用工具箱</span>
         <span style="font-size:11px; opacity:0.6;">RESEARCH & CITATION</span>
       </div>
       <div class="toolbox-grid">
-        <button class="toolbox-action-btn" onclick="copyDetailCitation()">📑 复制 APA 媒体引用格式</button>
-        <button class="toolbox-action-btn" onclick="copyDetailMarkdown()">📋 复制结构化 Markdown</button>
-        <button class="toolbox-action-btn" onclick="copyFactBullets()">📌 复制事实要点纯文本</button>
-        <button class="toolbox-action-btn" onclick="copyShareUrl()">🔗 复制本篇直链地址</button>
+        <button class="toolbox-action-btn" onclick="copyDetailCitation()">复制 APA 引用格式</button>
+        <button class="toolbox-action-btn" onclick="copyDetailMarkdown()">复制 Markdown 文本</button>
+        <button class="toolbox-action-btn" onclick="copyFactBullets()">复制事实要点</button>
+        <button class="toolbox-action-btn" onclick="copyShareUrl()">复制文章直链</button>
       </div>
     </div>
   `;
@@ -1571,7 +1570,7 @@ function updateDetailBookmarkBtn() {
   if (!currentArticle) return;
   const isSt = isBookmarked(currentArticle.id);
   btn.classList.toggle('active', isSt);
-  btn.textContent = isSt ? '★ 已收藏' : '☆ 收藏本篇';
+  btn.textContent = isSt ? '已收藏' : '收藏本篇';
 }
 
 function toggleDetailBookmark() {
