@@ -20,9 +20,17 @@
   --tag-active-bg: #1f6feb;
   --tag-active-text: #ffffff;
   --quote-bg: rgba(88,166,255,0.06);
+  --points-bg: rgba(255,255,255,0.03);
   --gradient-start: #58a6ff;
   --gradient-end: #bc8cff;
   --shadow: 0 4px 20px rgba(0,0,0,0.3);
+
+  /* Stance Colors */
+  --stance-agree: #238636;
+  --stance-oppose: #da3633;
+  --stance-watch: #d29922;
+  --stance-fun: #a371f7;
+  --stance-default: #58a6ff;
 }
 
 [data-theme="light"] {
@@ -40,9 +48,16 @@
   --tag-active-bg: #0969da;
   --tag-active-text: #ffffff;
   --quote-bg: #f6f8fa;
+  --points-bg: #f8fafc;
   --gradient-start: #0969da;
   --gradient-end: #8250df;
   --shadow: 0 4px 20px rgba(140,149,159,0.15);
+
+  --stance-agree: #1a7f37;
+  --stance-oppose: #cf222e;
+  --stance-watch: #9a6700;
+  --stance-fun: #8250df;
+  --stance-default: #0969da;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -62,7 +77,6 @@ header {
   background: var(--header-bg);
   border-bottom: 1px solid var(--border);
   padding: 14px 0;
-  transition: border-color 0.25s;
 }
 .header-inner {
   max-width: 820px; margin: 0 auto; padding: 0 20px;
@@ -76,9 +90,7 @@ header {
   cursor: pointer;
   user-select: none;
 }
-.header-actions {
-  display: flex; align-items: center; gap: 12px;
-}
+.header-actions { display: flex; align-items: center; gap: 12px; }
 .theme-btn {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -97,7 +109,7 @@ header {
 /* Dashboard banner */
 .dashboard {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 12px;
   margin-bottom: 24px;
 }
@@ -107,12 +119,11 @@ header {
   border-radius: 10px;
   padding: 14px 18px;
   box-shadow: var(--shadow);
-  display: flex; flex-direction: column; justify-content: center;
 }
 .metric-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
 .metric-value { font-size: 22px; font-weight: 700; color: var(--accent); }
 
-/* Search and Filters */
+/* Controls */
 .controls-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -141,10 +152,7 @@ header {
   position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
   color: var(--text-secondary); font-size: 14px; pointer-events: none;
 }
-
-.tag-list {
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-}
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .tag-pill {
   font-size: 12px; padding: 4px 12px; border-radius: 16px;
   background: var(--tag-bg); color: var(--tag-text);
@@ -175,16 +183,31 @@ header {
 }
 .entry-header {
   display: flex; align-items: flex-start; justify-content: space-between;
-  margin-bottom: 14px; gap: 14px;
+  margin-bottom: 12px; gap: 14px;
 }
+.entry-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap; }
 .entry-title {
   font-size: 18px; font-weight: 600; line-height: 1.4;
-  color: var(--text); flex: 1;
+  color: var(--text);
 }
 .entry-time {
   font-size: 12px; color: var(--text-secondary);
   white-space: nowrap; padding-top: 3px;
 }
+
+/* Stance badge */
+.stance-badge {
+  font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 6px;
+  color: #ffffff; display: inline-flex; align-items: center; gap: 4px;
+  line-height: 1.4;
+}
+.stance-agree { background: var(--stance-agree); }
+.stance-oppose { background: var(--stance-oppose); }
+.stance-watch { background: var(--stance-watch); }
+.stance-fun { background: var(--stance-fun); }
+.stance-default { background: var(--stance-default); }
+
 .entry-summary {
   font-size: 14px; color: var(--text-secondary);
   margin-bottom: 14px;
@@ -194,14 +217,46 @@ header {
   border-radius: 0 6px 6px 0;
   line-height: 1.6;
 }
-.entry-comment {
-  font-size: 15px; line-height: 1.7;
-  color: var(--text);
+
+/* Bullet points (Takeaways) */
+.entry-points {
+  background: var(--points-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
   margin-bottom: 16px;
 }
+.points-title {
+  font-size: 12px; font-weight: 600; color: var(--text-secondary);
+  margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.points-list {
+  list-style: none; display: flex; flex-direction: column; gap: 6px;
+}
+.points-list li {
+  font-size: 13.5px; line-height: 1.5; color: var(--text);
+  position: relative; padding-left: 18px;
+}
+.points-list li::before {
+  content: "•"; position: absolute; left: 4px; top: -1px;
+  color: var(--accent); font-size: 18px;
+}
+
+/* My comment / Perspective */
+.entry-comment-box {
+  margin-bottom: 16px;
+}
+.comment-label {
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  margin-bottom: 4px; display: inline-flex; align-items: center; gap: 4px;
+}
+.entry-comment {
+  font-size: 15px; line-height: 1.7; color: var(--text);
+}
+
 .entry-image-box {
   position: relative; margin-bottom: 16px; border-radius: 8px; overflow: hidden;
-  max-height: 520px;
+  max-height: 480px; background: var(--border);
 }
 .entry-image {
   width: 100%; display: block; object-fit: cover;
@@ -209,6 +264,7 @@ header {
   transition: opacity 0.2s;
 }
 .entry-image:hover { opacity: 0.95; }
+
 .entry-footer {
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; gap: 12px;
@@ -220,8 +276,7 @@ header {
 .footer-right { display: flex; align-items: center; gap: 10px; }
 .entry-source {
   color: var(--accent); text-decoration: none;
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 13px;
+  display: inline-flex; align-items: center; gap: 4px; font-size: 13px;
 }
 .entry-source:hover { text-decoration: underline; }
 .copy-btn {
@@ -233,10 +288,7 @@ header {
 }
 .copy-btn:hover { color: var(--text); border-color: var(--text); }
 
-.empty-state {
-  text-align: center; padding: 80px 20px;
-  color: var(--text-secondary);
-}
+.empty-state { text-align: center; padding: 80px 20px; color: var(--text-secondary); }
 .empty-state p { font-size: 15px; }
 
 /* Lightbox Modal */
@@ -254,7 +306,6 @@ header {
   box-shadow: 0 8px 32px rgba(0,0,0,0.6);
 }
 
-/* Toast */
 .toast {
   position: fixed; bottom: 24px; right: 24px;
   background: var(--card-bg); border: 1px solid var(--accent);
@@ -296,7 +347,7 @@ header {
       <div class="metric-value" id="metricTags">0</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">最近更新</div>
+      <div class="metric-label">最新更新</div>
       <div class="metric-value" id="metricRecent" style="font-size:15px; padding-top:4px;">-</div>
     </div>
   </div>
@@ -306,7 +357,7 @@ header {
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
       <input type="text" class="search-box" id="searchBox"
-             placeholder="搜索标题、摘要、评论或标签关键字…" autocomplete="off">
+             placeholder="搜索标题、要点、观点或标签关键字…" autocomplete="off">
     </div>
     <div class="tag-list" id="tagList"></div>
   </div>
@@ -320,14 +371,13 @@ header {
   <img id="lightboxImg" src="" alt="放大图">
 </div>
 
-<div class="toast" id="toast">已复制到剪贴板</div>
+<div class="toast" id="toast">已复制</div>
 
 <script>
 const ENTRIES_URL = 'entries.json';
 let allEntries = [];
 let activeTag = null;
 
-// Theme handling
 function initTheme() {
   const saved = localStorage.getItem('site_theme');
   if (saved) {
@@ -368,18 +418,34 @@ function showToast(text) {
 function copyText(title, comment, source) {
   const content = `${title}\n\n${comment}${source ? '\n出处: ' + source : ''}`;
   navigator.clipboard.writeText(content).then(() => {
-    showToast('卡片内容已复制');
+    showToast('内容已复制到剪贴板');
   }).catch(() => {
     showToast('复制失败');
   });
 }
 
+function getStanceClass(stance) {
+  if (!stance) return 'stance-default';
+  if (stance.includes('赞同') || stance.includes('支持') || stance.includes('务实')) return 'stance-agree';
+  if (stance.includes('反驳') || stance.includes('存疑') || stance.includes('批评')) return 'stance-oppose';
+  if (stance.includes('观望') || stance.includes('观察') || stance.includes('中立')) return 'stance-watch';
+  if (stance.includes('乐子') || stance.includes('吃瓜') || stance.includes('趣味')) return 'stance-fun';
+  return 'stance-default';
+}
+
 function renderEntry(e) {
   const tags = e.tags || [];
+  const points = e.points || [];
+  const stance = e.stance || '观察';
+  const stanceClass = getStanceClass(stance);
+
   let html = `<div class="entry" data-id="${e.id}">`;
 
   html += `<div class="entry-header">`;
+  html += `<div class="entry-title-wrap">`;
+  html += `<span class="stance-badge ${stanceClass}">${escapeHtml(stance)}</span>`;
   html += `<div class="entry-title">${escapeHtml(e.title)}</div>`;
+  html += `</div>`;
   html += `<div class="entry-time">${formatTime(e.time)}</div>`;
   html += `</div>`;
 
@@ -387,14 +453,28 @@ function renderEntry(e) {
     html += `<div class="entry-summary">${escapeHtml(e.summary)}</div>`;
   }
 
+  // Key Points
+  if (points.length > 0) {
+    html += `<div class="entry-points">`;
+    html += `<div class="points-title">📌 核心看点</div>`;
+    html += `<ul class="points-list">`;
+    points.forEach(p => {
+      html += `<li>${escapeHtml(p)}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+
   if (e.image) {
     html += `<div class="entry-image-box">`;
-    html += `<img class="entry-image" src="${escapeHtml(e.image)}" alt="${escapeHtml(e.title)}" loading="lazy" onclick="openLightbox(this.src)">`;
+    html += `<img class="entry-image" src="${escapeHtml(e.image)}" alt="${escapeHtml(e.title)}" loading="lazy" onerror="this.parentElement.style.display='none'" onclick="openLightbox(this.src)">`;
     html += `</div>`;
   }
 
   if (e.comment) {
+    html += `<div class="entry-comment-box">`;
+    html += `<div class="comment-label">💬 观察思考</div>`;
     html += `<div class="entry-comment">${escapeHtml(e.comment).replace(/\n/g, '<br>')}</div>`;
+    html += `</div>`;
   }
 
   html += `<div class="entry-footer">`;
@@ -494,10 +574,10 @@ function renderAll(query) {
     filtered = filtered.filter(e => (e.tags || []).includes(activeTag));
   }
   if (q) {
-    filtered = filtered.filter(e =>
-      (e.title + ' ' + (e.summary||'') + ' ' + (e.comment||'') + ' ' + (e.tags||[]).join(' '))
-        .toLowerCase().includes(q)
-    );
+    filtered = filtered.filter(e => {
+      const searchStr = (e.title + ' ' + (e.summary||'') + ' ' + (e.comment||'') + ' ' + (e.stance||'') + ' ' + (e.points||[]).join(' ') + ' ' + (e.tags||[]).join(' ')).toLowerCase();
+      return searchStr.includes(q);
+    });
   }
 
   if (filtered.length === 0) {
@@ -506,7 +586,6 @@ function renderAll(query) {
     return;
   }
 
-  // Newest on top
   const sorted = [...filtered].sort((a,b) => new Date(b.time) - new Date(a.time));
   feed.innerHTML = sorted.map(renderEntry).join('');
 }
