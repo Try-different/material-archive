@@ -1,483 +1,663 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>素材归档站 · 观察与思考</title>
+<title>素材观察报 · THE MATERIAL CHRONICLE</title>
 <style>
+/* ── News Editorial Design Tokens ── */
 :root {
-  --bg: #0d1117;
-  --header-bg: rgba(13,17,23,0.85);
-  --card-bg: #161b22;
-  --card-hover-border: #58a6ff;
-  --border: #30363d;
-  --text: #e6edf3;
-  --text-secondary: #8b949e;
-  --accent: #58a6ff;
-  --accent-glow: rgba(88, 166, 255, 0.15);
-  --tag-bg: #1f6feb26;
-  --tag-text: #58a6ff;
-  --tag-active-bg: #1f6feb;
-  --tag-active-text: #ffffff;
-  --quote-bg: rgba(88,166,255,0.06);
-  --section-bg: rgba(255,255,255,0.03);
-  --gradient-start: #58a6ff;
-  --gradient-end: #bc8cff;
-  --shadow: 0 4px 20px rgba(0,0,0,0.3);
+  --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
-  --stance-agree: #238636;
-  --stance-oppose: #da3633;
-  --stance-watch: #d29922;
-  --stance-fun: #a371f7;
-  --stance-default: #58a6ff;
+  --bg: #f8f7f4;
+  --paper: #ffffff;
+  --paper-subtle: #f2f0eb;
+  --border-strong: #111111;
+  --border-rule: #d5d1c8;
+  --border-light: #e8e5de;
+  --text-main: #141414;
+  --text-lead: #2c2b29;
+  --text-muted: #6e6b64;
+  --text-caption: #8a867d;
+
+  --news-red: #c8102e;
+  --news-red-soft: #fcf1f2;
+  --news-blue: #0f3d68;
+  --news-gold: #8d6218;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-card: 0 2px 8px rgba(20,20,20,0.04);
 }
 
-[data-theme="light"] {
-  --bg: #f6f8fa;
-  --header-bg: rgba(246,248,250,0.88);
-  --card-bg: #ffffff;
-  --card-hover-border: #0969da;
-  --border: #d0d7de;
-  --text: #1f2328;
-  --text-secondary: #656d76;
-  --accent: #0969da;
-  --accent-glow: rgba(9, 105, 218, 0.12);
-  --tag-bg: #ddf4ff;
-  --tag-text: #0969da;
-  --tag-active-bg: #0969da;
-  --tag-active-text: #ffffff;
-  --quote-bg: #f6f8fa;
-  --section-bg: #f8fafc;
-  --gradient-start: #0969da;
-  --gradient-end: #8250df;
-  --shadow: 0 4px 20px rgba(140,149,159,0.15);
+[data-theme="dark"] {
+  --bg: #121316;
+  --paper: #1a1b1f;
+  --paper-subtle: #23252a;
+  --border-strong: #e5e5e5;
+  --border-rule: #363940;
+  --border-light: #2b2d34;
+  --text-main: #eae8e4;
+  --text-lead: #d2cfc8;
+  --text-muted: #9da0a8;
+  --text-caption: #777a82;
 
-  --stance-agree: #1a7f37;
-  --stance-oppose: #cf222e;
-  --stance-watch: #9a6700;
-  --stance-fun: #8250df;
-  --stance-default: #0969da;
+  --news-red: #ff4d6a;
+  --news-red-soft: #2a1519;
+  --news-blue: #5b9ed8;
+  --news-gold: #e5a73b;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  min-height: 100vh;
-  transition: background-color 0.25s, color 0.25s;
+  background-color: var(--bg);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-header {
-  position: sticky; top: 0; z-index: 100;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: var(--header-bg);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 0;
+/* ── Masthead Top Bar ── */
+.top-ticker-bar {
+  background: var(--paper);
+  border-bottom: 1px solid var(--border-rule);
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 6px 0;
 }
-.header-inner {
-  max-width: 860px; margin: 0 auto; padding: 0 20px;
-  display: flex; align-items: center; justify-content: space-between;
+.ticker-inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+  display: flex; justify-content: space-between; align-items: center;
 }
-.site-title {
-  font-size: 20px; font-weight: 700;
-  display: flex; align-items: center; gap: 8px;
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  cursor: pointer; user-select: none;
+.ticker-left { display: flex; align-items: center; gap: 16px; }
+.ticker-badge {
+  background: var(--news-red); color: #fff;
+  font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 2px;
+  letter-spacing: 0.5px;
 }
-.header-actions { display: flex; align-items: center; gap: 12px; }
-.theme-btn {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 13px;
+.ticker-right { display: flex; align-items: center; gap: 14px; }
+.mode-toggle {
+  background: none; border: 1px solid var(--border-rule);
+  color: var(--text-main); padding: 3px 8px; border-radius: 3px;
+  font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+  transition: all 0.15s;
+}
+.mode-toggle:hover { border-color: var(--border-strong); }
+
+/* ── Newspaper Masthead ── */
+.masthead-wrapper {
+  background: var(--paper);
+  border-bottom: 2px solid var(--border-strong);
+  padding: 24px 0 0;
+}
+.masthead-inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+  text-align: center;
+}
+.masthead-pre {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 2px;
+  color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;
+}
+.masthead-brand {
+  font-family: var(--font-serif);
+  font-size: clamp(34px, 6vw, 56px);
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--text-main);
+  line-height: 1.15;
+  margin-bottom: 8px;
   cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
-  transition: all 0.2s;
+  user-select: none;
 }
-.theme-btn:hover { border-color: var(--accent); }
+.masthead-motto {
+  font-family: var(--font-serif);
+  font-size: 14px; font-style: italic;
+  color: var(--text-muted); margin-bottom: 18px;
+}
 
-.container { max-width: 860px; margin: 0 auto; padding: 24px 20px 80px; }
+/* ── Newspaper Nav Bar ── */
+.news-nav {
+  border-top: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border-strong);
+  margin-top: 14px;
+  background: var(--paper);
+}
+.nav-inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-categories {
+  display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+  padding: 6px 0;
+}
+.nav-categories::-webkit-scrollbar { display: none; }
+.nav-item {
+  padding: 6px 14px;
+  font-size: 13.5px; font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer; white-space: nowrap;
+  border-radius: 2px; transition: all 0.15s;
+}
+.nav-item:hover { color: var(--text-main); background: var(--paper-subtle); }
+.nav-item.active {
+  color: #fff; background: var(--border-strong);
+}
 
-/* Dashboard banner */
-.dashboard {
+.nav-search {
+  position: relative; width: 220px;
+}
+.nav-search input {
+  width: 100%; padding: 5px 28px 5px 10px;
+  font-size: 13px; background: var(--bg);
+  border: 1px solid var(--border-rule);
+  color: var(--text-main); border-radius: 2px; outline: none;
+}
+.nav-search input:focus { border-color: var(--news-red); }
+.nav-search-icon {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 12px; pointer-events: none;
+}
+
+/* ── Layout Container ── */
+.container {
+  max-width: 1180px; margin: 0 auto; padding: 24px 24px 80px;
+}
+
+/* ── Newspaper Front Page (Grid & Lead Story) ── */
+.edition-bar {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 1px solid var(--border-rule);
+  padding-bottom: 10px; margin-bottom: 24px;
+}
+.edition-title {
+  font-family: var(--font-serif);
+  font-size: 18px; font-weight: 800;
+  color: var(--news-red);
+  display: flex; align-items: center; gap: 8px;
+}
+.edition-title::after {
+  content: ""; display: inline-block; width: 30px; height: 1px; background: var(--news-red);
+}
+.edition-count {
+  font-size: 13px; color: var(--text-muted);
+}
+
+/* ── Frontpage News Layout ── */
+.front-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.metric-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 18px;
-  box-shadow: var(--shadow);
-}
-.metric-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
-.metric-value { font-size: 22px; font-weight: 700; color: var(--accent); }
-
-/* Controls */
-.controls-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow);
-}
-.search-wrapper { position: relative; margin-bottom: 12px; }
-.search-box {
-  width: 100%; padding: 10px 14px 10px 38px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.search-box:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-.search-box::placeholder { color: var(--text-secondary); }
-.search-icon {
-  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-  color: var(--text-secondary); font-size: 14px; pointer-events: none;
-}
-.tag-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.tag-pill {
-  font-size: 12px; padding: 4px 12px; border-radius: 16px;
-  background: var(--tag-bg); color: var(--tag-text);
-  border: 1px solid transparent;
-  cursor: pointer; user-select: none;
-  transition: all 0.2s;
-}
-.tag-pill:hover { border-color: var(--accent); }
-.tag-pill.active {
-  background: var(--tag-active-bg);
-  color: var(--tag-active-text);
-  font-weight: 600;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 28px;
+  margin-bottom: 40px;
 }
 
-/* List View Grid */
-.cards-grid {
+/* Lead Story Card */
+.lead-story {
+  background: var(--paper);
+  border: 1px solid var(--border-rule);
+  padding: 24px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  display: flex; flex-direction: column;
+}
+.lead-story:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.lead-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700;
+  color: var(--news-red); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.lead-image-wrap {
+  width: 100%; height: 320px; overflow: hidden;
+  background: var(--paper-subtle); margin-bottom: 16px;
+  position: relative;
+}
+.lead-image {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.lead-story:hover .lead-image { transform: scale(1.02); }
+.lead-headline {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.5vw, 28px);
+  font-weight: 800; line-height: 1.35;
+  color: var(--text-main); margin-bottom: 12px;
+}
+.lead-story:hover .lead-headline { color: var(--news-red); }
+.lead-deck {
+  font-size: 15px; line-height: 1.7;
+  color: var(--text-lead); margin-bottom: 16px; flex: 1;
+}
+.lead-byline {
+  font-size: 12px; color: var(--text-muted);
+  border-top: 1px solid var(--border-light);
+  padding-top: 12px; display: flex; justify-content: space-between; align-items: center;
+}
+.news-badge {
+  font-size: 11px; padding: 2px 6px;
+  background: var(--paper-subtle); color: var(--text-muted);
+  border-radius: 2px; font-weight: 600;
+}
+.read-more-link {
+  color: var(--news-red); font-weight: 700; font-size: 13px;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+/* Secondary Stories Column */
+.secondary-column {
+  display: flex; flex-direction: column; gap: 20px;
+}
+.sec-story {
+  background: var(--paper);
+  border: 1px solid var(--border-rule);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.sec-story:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+.sec-content { flex: 1; }
+.sec-kicker {
+  font-size: 11px; font-weight: 700; color: var(--news-blue);
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.sec-headline {
+  font-family: var(--font-serif);
+  font-size: 17px; font-weight: 700; line-height: 1.4;
+  color: var(--text-main); margin-bottom: 8px;
+}
+.sec-story:hover .sec-headline { color: var(--news-red); }
+.sec-snippet {
+  font-size: 13px; color: var(--text-muted); line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; margin-bottom: 10px;
+}
+.sec-time { font-size: 11.5px; color: var(--text-caption); }
+.sec-thumb {
+  width: 110px; height: 85px; object-fit: cover;
+  background: var(--paper-subtle); flex-shrink: 0;
+}
+
+/* ── More News Grid ── */
+.more-news-section {
+  border-top: 2px solid var(--border-strong);
+  padding-top: 24px;
+}
+.section-headline {
+  font-family: var(--font-serif);
+  font-size: 20px; font-weight: 900;
+  margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;
+}
+.news-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
 }
-.card-item {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
+.grid-card {
+  background: var(--paper);
+  border: 1px solid var(--border-rule);
+  padding: 18px;
   cursor: pointer;
   display: flex; flex-direction: column;
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
 }
-.card-item:hover {
-  transform: translateY(-3px);
-  border-color: var(--card-hover-border);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+.grid-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
 }
-.card-thumb-wrap {
-  width: 100%; height: 180px; background: var(--border);
-  position: relative; overflow: hidden;
+.grid-card-thumb-wrap {
+  width: 100%; height: 160px; overflow: hidden;
+  background: var(--paper-subtle); margin-bottom: 12px;
 }
-.card-thumb {
+.grid-card-thumb {
   width: 100%; height: 100%; object-fit: cover;
   transition: transform 0.3s;
 }
-.card-item:hover .card-thumb { transform: scale(1.03); }
-.card-body {
-  padding: 18px 20px; flex: 1; display: flex; flex-direction: column;
+.grid-card:hover .grid-card-thumb { transform: scale(1.03); }
+.grid-card-title {
+  font-family: var(--font-serif);
+  font-size: 16.5px; font-weight: 700; line-height: 1.45;
+  color: var(--text-main); margin-bottom: 8px;
 }
-.card-header-meta {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 10px; gap: 8px;
-}
-.stance-badge {
-  font-size: 11px; font-weight: 600;
-  padding: 2px 8px; border-radius: 6px;
-  color: #ffffff; display: inline-flex; align-items: center; gap: 4px;
-}
-.stance-agree { background: var(--stance-agree); }
-.stance-oppose { background: var(--stance-oppose); }
-.stance-watch { background: var(--stance-watch); }
-.stance-fun { background: var(--stance-fun); }
-.stance-default { background: var(--stance-default); }
-
-.card-time { font-size: 12px; color: var(--text-secondary); }
-.card-title {
-  font-size: 17px; font-weight: 700; line-height: 1.45;
-  color: var(--text); margin-bottom: 10px;
-}
-.card-snippet {
-  font-size: 13.5px; color: var(--text-secondary);
-  line-height: 1.6; margin-bottom: 14px; flex: 1;
+.grid-card:hover .grid-card-title { color: var(--news-red); }
+.grid-card-desc {
+  font-size: 13px; color: var(--text-muted); line-height: 1.6;
+  margin-bottom: 12px; flex: 1;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.card-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 12px; border-top: 1px solid var(--border);
-  font-size: 12px; color: var(--accent);
-}
-.card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-.card-tag {
-  background: var(--tag-bg); color: var(--tag-text);
-  padding: 2px 8px; border-radius: 10px; font-size: 11px;
-}
-.read-more-hint {
-  font-weight: 600; display: inline-flex; align-items: center; gap: 4px;
+.grid-card-footer {
+  font-size: 11.5px; color: var(--text-caption);
+  border-top: 1px solid var(--border-light);
+  padding-top: 10px; display: flex; justify-content: space-between; align-items: center;
 }
 
-/* Detail View Viewport */
-.detail-view {
+/* ── ARTICLE DETAIL VIEW (Full Newspaper Article) ── */
+.article-view {
   display: none;
-  animation: fadeIn 0.25s ease-out;
+  animation: fadeIn 0.2s ease-out;
 }
-.detail-view.active { display: block; }
+.article-view.active { display: block; }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.back-bar {
-  margin-bottom: 20px;
+.article-nav-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-rule);
 }
-.back-btn {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 13.5px; font-weight: 600;
+.back-to-front {
+  background: var(--paper); border: 1px solid var(--border-rule);
+  color: var(--text-main); padding: 8px 16px; font-size: 13.5px; font-weight: 700;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s;
+}
+.back-to-front:hover {
+  background: var(--border-strong); color: #fff;
+}
+.article-breadcrumbs {
+  font-size: 12.5px; color: var(--text-muted);
+}
+
+.article-sheet {
+  background: var(--paper);
+  border: 1px solid var(--border-rule);
+  box-shadow: var(--shadow-card);
+  padding: clamp(24px, 5vw, 56px);
+  max-width: 900px; margin: 0 auto;
+}
+
+.art-kicker {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 800;
+  color: var(--news-red); text-transform: uppercase;
+  letter-spacing: 1.5px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.art-headline {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 900; line-height: 1.25;
+  color: var(--text-main); margin-bottom: 18px;
+}
+.art-deck {
+  font-family: var(--font-serif);
+  font-size: 18px; line-height: 1.65;
+  color: var(--text-lead);
+  border-left: 3px solid var(--news-red);
+  padding-left: 16px; margin-bottom: 24px;
+  font-style: italic;
+}
+
+.art-byline-box {
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border-rule);
+  border-bottom: 1px solid var(--border-rule);
+  padding: 10px 0; margin-bottom: 28px;
+  font-size: 13px; color: var(--text-muted);
+  flex-wrap: wrap; gap: 10px;
+}
+.byline-author { font-weight: 700; color: var(--text-main); }
+.byline-source a {
+  color: var(--news-blue); text-decoration: none; font-weight: 600;
+}
+.byline-source a:hover { text-decoration: underline; }
+
+.art-featured-image {
+  margin: 24px 0;
+}
+.art-img {
+  width: 100%; max-height: 520px; object-fit: cover;
+  background: var(--paper-subtle); display: block;
+}
+.art-caption {
+  font-size: 12px; color: var(--text-caption);
+  padding: 8px 4px 0; border-bottom: 1px solid var(--border-light);
+  line-height: 1.5; font-style: italic;
+}
+
+/* Fact Box (Key Takeaways) */
+.factbox {
+  background: var(--paper-subtle);
+  border: 1px solid var(--border-rule);
+  border-top: 3px solid var(--border-strong);
+  padding: 20px 24px; margin: 30px 0;
+}
+.factbox-title {
+  font-family: var(--font-serif);
+  font-size: 15px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+}
+.factbox-list {
+  list-style: none; display: flex; flex-direction: column; gap: 10px;
+}
+.factbox-list li {
+  font-size: 14.5px; line-height: 1.65; color: var(--text-main);
+  position: relative; padding-left: 18px;
+}
+.factbox-list li::before {
+  content: "■"; position: absolute; left: 0; top: 0;
+  font-size: 10px; color: var(--news-red);
+}
+
+/* Section Subhead & Body */
+.news-subhead {
+  font-family: var(--font-serif);
+  font-size: 21px; font-weight: 800;
+  color: var(--text-main); margin: 34px 0 14px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border-rule);
+}
+.art-body-text {
+  font-size: 16px; line-height: 1.85; color: var(--text-main);
+  margin-bottom: 18px; white-space: pre-line;
+}
+
+/* Pull Quote */
+.art-pullquote {
+  margin: 36px 0; padding: 24px 32px;
+  border-top: 2px solid var(--border-strong);
+  border-bottom: 2px solid var(--border-strong);
+  text-align: center;
+}
+.art-pullquote-quote {
+  font-family: var(--font-serif);
+  font-size: clamp(19px, 2.5vw, 24px);
+  font-weight: 700; line-height: 1.5;
+  color: var(--text-main); font-style: italic; margin-bottom: 8px;
+}
+.art-pullquote-source {
+  font-size: 12.5px; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Op-Ed Commentary Box */
+.commentary-box {
+  background: var(--news-red-soft);
+  border: 1px solid rgba(200,16,46,0.2);
+  border-left: 4px solid var(--news-red);
+  padding: 20px 24px; margin: 32px 0;
+}
+.commentary-header {
+  font-size: 13px; font-weight: 800; color: var(--news-red);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+}
+.commentary-text {
+  font-size: 15.5px; line-height: 1.75; color: var(--text-main);
+}
+
+/* Article Footer */
+.art-footer-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border-rule);
+  padding-top: 24px; margin-top: 40px;
+  flex-wrap: wrap; gap: 12px;
+}
+.art-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.art-tag-badge {
+  background: var(--paper-subtle); color: var(--text-muted);
+  font-size: 12px; padding: 3px 10px; border-radius: 2px;
   cursor: pointer;
-  display: inline-flex; align-items: center; gap: 8px;
-  transition: all 0.2s;
 }
-.back-btn:hover { border-color: var(--accent); color: var(--accent); }
+.art-tag-badge:hover { color: var(--text-main); }
+.share-btn {
+  background: var(--paper); border: 1px solid var(--border-rule);
+  padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  border-radius: 2px;
+}
+.share-btn:hover { border-color: var(--border-strong); }
 
-.article-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: var(--shadow);
-}
-.article-header {
-  margin-bottom: 24px; padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
-}
-.article-meta {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 14px; flex-wrap: wrap;
-}
-.article-title {
-  font-size: 26px; font-weight: 800; line-height: 1.4;
-  color: var(--text); margin-bottom: 14px;
-}
-.article-summary-lead {
-  font-size: 16px; line-height: 1.7; color: var(--text-secondary);
-  background: var(--quote-bg); padding: 14px 18px;
-  border-left: 4px solid var(--accent);
-  border-radius: 0 8px 8px 0;
-}
-
-.article-image-box {
-  margin: 24px 0; border-radius: 10px; overflow: hidden;
-  max-height: 520px; background: var(--border);
-}
-.article-image {
-  width: 100%; display: block; object-fit: cover;
-  cursor: zoom-in;
-}
-
-.detail-section {
-  margin: 24px 0; padding: 20px 22px;
-  background: var(--section-bg);
-  border-radius: 10px; border: 1px solid var(--border);
-}
-.detail-title {
-  font-size: 15px; font-weight: 700; color: var(--accent);
-  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
-}
-.detail-content {
-  font-size: 15px; line-height: 1.8; color: var(--text);
-  white-space: pre-line;
-}
-
-.points-list {
-  list-style: none; display: flex; flex-direction: column; gap: 8px;
-}
-.points-list li {
-  font-size: 14.5px; line-height: 1.6; color: var(--text);
-  position: relative; padding-left: 20px;
-}
-.points-list li::before {
-  content: "•"; position: absolute; left: 4px; top: -1px;
-  color: var(--accent); font-size: 20px;
-}
-
-.quote-box {
-  margin: 24px 0; padding: 16px 22px;
-  border-left: 4px solid var(--gradient-end);
-  background: var(--quote-bg);
-  border-radius: 0 8px 8px 0;
-  font-style: italic; font-size: 15px; line-height: 1.7;
-}
-
-.article-comment-box {
-  margin: 24px 0; padding: 20px 22px;
-  background: rgba(88,166,255,0.06);
-  border-radius: 10px; border: 1px solid var(--border);
-}
-.comment-label {
-  font-size: 14px; font-weight: 700; color: var(--accent);
-  margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
-}
-.article-comment {
-  font-size: 15.5px; line-height: 1.8; color: var(--text);
-}
-
-.article-footer-bar {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-top: 32px; padding-top: 20px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap; gap: 14px;
-}
-
-.empty-state { text-align: center; padding: 80px 20px; color: var(--text-secondary); }
-
-/* Lightbox Modal */
-.lightbox {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.85); z-index: 999;
-  justify-content: center; align-items: center;
-  padding: 20px; cursor: zoom-out;
-  backdrop-filter: blur(6px);
-}
-.lightbox.active { display: flex; }
-.lightbox img {
-  max-width: 95vw; max-height: 90vh;
-  object-fit: contain; border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-}
-
+/* ── Lightbox & Toast ── */
 .toast {
   position: fixed; bottom: 24px; right: 24px;
-  background: var(--card-bg); border: 1px solid var(--accent);
-  color: var(--text); padding: 10px 18px; border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-  font-size: 13px; opacity: 0; pointer-events: none;
-  transform: translateY(10px); transition: all 0.25s;
-  z-index: 1000;
+  background: var(--border-strong); color: #fff;
+  padding: 8px 16px; font-size: 13px; border-radius: 2px;
+  opacity: 0; transform: translateY(10px); transition: all 0.2s; pointer-events: none;
+  z-index: 999;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
 
-@media (max-width: 680px) {
-  .cards-grid { grid-template-columns: 1fr; }
-  .article-card { padding: 20px 18px; }
-  .article-title { font-size: 20px; }
-  .dashboard { grid-template-columns: 1fr 1fr; }
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .front-layout { grid-template-columns: 1fr; }
+  .lead-image-wrap { height: 220px; }
+  .sec-story { flex-direction: column-reverse; }
+  .sec-thumb { width: 100%; height: 160px; }
+  .nav-inner { flex-direction: column; gap: 10px; align-items: stretch; }
+  .nav-search { width: 100%; }
 }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="site-title" onclick="goHome()">📡 素材归档站</div>
-    <div class="header-actions">
-      <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">🌓 切换主题</button>
+<!-- TOP TICKER -->
+<div class="top-ticker-bar">
+  <div class="ticker-inner">
+    <div class="ticker-left">
+      <span class="ticker-badge">特刊</span>
+      <span id="currentDateStr">2026年11月19日 · 深度素材周报</span>
+      <span style="opacity:0.6;">|</span>
+      <span>结构化事实观察站</span>
+    </div>
+    <div class="ticker-right">
+      <span id="articleCountBadge">收录 0 篇</span>
+      <button class="mode-toggle" onclick="toggleTheme()" id="themeBtn">🌓 切换夜间</button>
     </div>
   </div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead-wrapper">
+  <div class="masthead-inner">
+    <div class="masthead-pre">THE MATERIAL CHRONICLE · 观察与思考</div>
+    <div class="masthead-brand" onclick="goHome()">素材观察报</div>
+    <div class="masthead-motto">“记录时代切片，用结构化事实拆解流行现象”</div>
+  </div>
+
+  <nav class="news-nav">
+    <div class="nav-inner">
+      <div class="nav-categories" id="navCategoryList">
+        <span class="nav-item active" onclick="filterCategory(null)">全部要闻</span>
+      </div>
+      <div class="nav-search">
+        <input type="text" id="searchInput" placeholder="检索新闻、机制、观点…" autocomplete="off">
+        <span class="nav-search-icon">🔍</span>
+      </div>
+    </div>
+  </nav>
 </header>
 
-<div class="container">
-  <!-- LIST VIEW -->
-  <div id="listView">
-    <!-- Metrics Dashboard -->
-    <div class="dashboard">
-      <div class="metric-card">
-        <div class="metric-label">收录条目</div>
-        <div class="metric-value" id="metricTotal">0</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">分类领域</div>
-        <div class="metric-value" id="metricTags">0</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">最近更新</div>
-        <div class="metric-value" id="metricRecent" style="font-size:15px; padding-top:4px;">-</div>
-      </div>
+<main class="container">
+  <!-- FRONT PAGE VIEW (NEWSPAPER GRID) -->
+  <div id="frontPageView">
+    <div class="edition-bar">
+      <div class="edition-title">头条观察 · 今日速递</div>
+      <div class="edition-count" id="matchSummary">正在载入要闻…</div>
     </div>
 
-    <!-- Search & Tag Filter -->
-    <div class="controls-card">
-      <div class="search-wrapper">
-        <span class="search-icon">🔍</span>
-        <input type="text" class="search-box" id="searchBox"
-               placeholder="搜索标题、背景、要点、深度分析或标签…" autocomplete="off">
-      </div>
-      <div class="tag-list" id="tagList"></div>
-    </div>
+    <!-- Lead Story + Side Columns -->
+    <div class="front-layout" id="frontLayout"></div>
 
-    <!-- Cards Grid -->
-    <div class="cards-grid" id="cardsGrid"></div>
+    <!-- More Stories Section -->
+    <div class="more-news-section" id="moreSection" style="display:none;">
+      <div class="section-headline">
+        <span>更多要闻与专题</span>
+      </div>
+      <div class="news-grid" id="newsGrid"></div>
+    </div>
   </div>
 
-  <!-- DETAIL VIEW -->
-  <div class="detail-view" id="detailView">
-    <div class="back-bar">
-      <button class="back-btn" onclick="goHome()">← 返回列表</button>
+  <!-- ARTICLE DETAIL VIEW -->
+  <article class="article-view" id="articleView">
+    <div class="article-nav-bar">
+      <button class="back-to-front" onclick="goHome()">← 返回要闻版面</button>
+      <div class="article-breadcrumbs" id="artBreadcrumbs">要闻中心 > 深度观察 > 正文</div>
     </div>
-    <article class="article-card" id="articleCard"></article>
-  </div>
-</div>
 
-<!-- Lightbox Modal -->
-<div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
-  <img id="lightboxImg" src="" alt="放大图">
-</div>
+    <div class="article-sheet" id="articleSheet">
+      <!-- Article injected dynamically -->
+    </div>
+  </article>
+</main>
 
-<div class="toast" id="toast">已复制</div>
+<div class="toast" id="toast">已复制链接</div>
 
 <script>
-const ENTRIES_URL = 'entries.json';
-let allEntries = [];
-let activeTag = null;
+const DATA_URL = 'entries.json';
+let allArticles = [];
+let activeCategory = null;
+let searchQuery = '';
 
+// Date string
+(function initDate() {
+  const d = new Date();
+  const weekDays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  const dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${weekDays[d.getDay()]} · 深度素材观察`;
+  document.getElementById('currentDateStr').textContent = dateStr;
+})();
+
+// Theme
 function initTheme() {
-  const saved = localStorage.getItem('site_theme');
+  const saved = localStorage.getItem('news_theme');
   if (saved) {
     document.documentElement.setAttribute('data-theme', saved);
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    document.documentElement.setAttribute('data-theme', 'light');
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-theme', 'dark');
   }
+  updateThemeBtn();
 }
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'light' ? 'dark' : 'light';
+  const next = cur === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('site_theme', next);
+  localStorage.setItem('news_theme', next);
+  updateThemeBtn();
+}
+function updateThemeBtn() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  document.getElementById('themeBtn').textContent = cur === 'dark' ? '☀️ 切换浅色' : '🌙 切换深色';
 }
 initTheme();
-
-function formatTime(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  const pad = n => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
 
 function escapeHtml(s) {
   if (!s) return '';
@@ -486,34 +666,18 @@ function escapeHtml(s) {
   return d.innerHTML;
 }
 
-function showToast(text) {
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = text;
+  t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-function copyArticle(title, url) {
-  const text = `${title}\n${url || window.location.href}`;
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('文章链接已复制');
-  }).catch(() => {
-    showToast('复制失败');
-  });
-}
-
-function getStanceClass(stance) {
-  if (!stance) return 'stance-default';
-  if (stance.includes('赞同') || stance.includes('支持') || stance.includes('务实')) return 'stance-agree';
-  if (stance.includes('反驳') || stance.includes('存疑') || stance.includes('批评')) return 'stance-oppose';
-  if (stance.includes('观望') || stance.includes('观察') || stance.includes('中立')) return 'stance-watch';
-  if (stance.includes('乐子') || stance.includes('吃瓜') || stance.includes('趣味')) return 'stance-fun';
-  return 'stance-default';
-}
-
-function openLightbox(src) {
-  document.getElementById('lightboxImg').src = src;
-  document.getElementById('lightbox').classList.add('active');
 }
 
 // Router
@@ -521,267 +685,309 @@ function route() {
   const hash = window.location.hash;
   const match = hash.match(/^#\/entry\/(.+)$/);
   if (match) {
-    const entryId = match[1];
-    showDetail(entryId);
+    showArticleDetail(match[1]);
   } else {
-    showList();
+    showFrontPage();
   }
 }
 window.addEventListener('hashchange', route);
 
 function goHome() {
   window.location.hash = '#/';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function openEntry(id) {
+function openArticle(id) {
   window.location.hash = '#/entry/' + id;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function showList() {
-  document.getElementById('listView').style.display = 'block';
-  document.getElementById('detailView').classList.remove('active');
-  renderList(document.getElementById('searchBox').value);
+function showFrontPage() {
+  document.getElementById('frontPageView').style.display = 'block';
+  document.getElementById('articleView').classList.remove('active');
+  renderFrontPage();
 }
 
-function showDetail(id) {
-  const entry = allEntries.find(e => String(e.id) === String(id));
-  if (!entry) {
+function showArticleDetail(id) {
+  const article = allArticles.find(a => String(a.id) === String(id));
+  if (!article) {
     goHome();
     return;
   }
-  document.getElementById('listView').style.display = 'none';
-  const detailView = document.getElementById('detailView');
-  detailView.classList.add('active');
-  renderDetail(entry);
+  document.getElementById('frontPageView').style.display = 'none';
+  const v = document.getElementById('articleView');
+  v.classList.add('active');
+  renderArticleDetail(article);
 }
 
-function renderCardItem(e) {
-  const stance = e.stance || '观察';
-  const stanceClass = getStanceClass(stance);
-  const tags = (e.tags || []).slice(0, 3);
-
-  let html = `<div class="card-item" onclick="openEntry('${e.id}')">`;
-
-  if (e.image) {
-    html += `<div class="card-thumb-wrap">`;
-    html += `<img class="card-thumb" src="${escapeHtml(e.image)}" alt="${escapeHtml(e.title)}" loading="lazy" onerror="this.parentElement.style.display='none'">`;
-    html += `</div>`;
+// Data loading
+async function loadData() {
+  try {
+    const res = await fetch(DATA_URL + '?t=' + Date.now());
+    allArticles = await res.json();
+  } catch (e) {
+    allArticles = [];
   }
-
-  html += `<div class="card-body">`;
-  html += `<div class="card-header-meta">`;
-  html += `<span class="stance-badge ${stanceClass}">${escapeHtml(stance)}</span>`;
-  html += `<span class="card-time">${formatTime(e.time)}</span>`;
-  html += `</div>`;
-
-  html += `<div class="card-title">${escapeHtml(e.title)}</div>`;
-  html += `<div class="card-snippet">${escapeHtml(e.summary || e.comment || '')}</div>`;
-
-  html += `<div class="card-footer">`;
-  html += `<div class="card-tags">`;
-  tags.forEach(t => {
-    html += `<span class="card-tag">${escapeHtml(t)}</span>`;
-  });
-  html += `</div>`;
-  html += `<span class="read-more-hint">阅读详情 →</span>`;
-  html += `</div>`;
-
-  html += `</div></div>`;
-  return html;
+  document.getElementById('articleCountBadge').textContent = `已收录 ${allArticles.length} 篇报道`;
+  buildCategoryNav();
+  route();
 }
 
-function renderDetail(e) {
-  const stance = e.stance || '观察';
-  const stanceClass = getStanceClass(stance);
-  const points = e.points || [];
-  const tags = e.tags || [];
-
-  let html = '';
-
-  html += `<div class="article-header">`;
-  html += `<div class="article-meta">`;
-  html += `<span class="stance-badge ${stanceClass}" style="font-size:12px; padding:3px 10px;">${escapeHtml(stance)}</span>`;
-  html += `<span style="font-size:13px; color:var(--text-secondary);">${formatTime(e.time)}</span>`;
-  tags.forEach(t => {
-    html += `<span class="card-tag" style="font-size:12px; padding:3px 10px;">${escapeHtml(t)}</span>`;
-  });
-  html += `</div>`;
-
-  html += `<h1 class="article-title">${escapeHtml(e.title)}</h1>`;
-
-  if (e.summary) {
-    html += `<div class="article-summary-lead">${escapeHtml(e.summary)}</div>`;
-  }
-  html += `</div>`;
-
-  // Cover image
-  if (e.image) {
-    html += `<div class="article-image-box">`;
-    html += `<img class="article-image" src="${escapeHtml(e.image)}" alt="${escapeHtml(e.title)}" onclick="openLightbox(this.src)">`;
-    html += `</div>`;
-  }
-
-  // Key points
-  if (points.length > 0) {
-    html += `<div class="detail-section">`;
-    html += `<div class="detail-title">📌 核心事实要点</div>`;
-    html += `<ul class="points-list">`;
-    points.forEach(p => {
-      html += `<li>${escapeHtml(p)}</li>`;
-    });
-    html += `</ul></div>`;
-  }
-
-  // Background context
-  if (e.background) {
-    html += `<div class="detail-section">`;
-    html += `<div class="detail-title">🧭 事件背景与起因</div>`;
-    html += `<div class="detail-content">${escapeHtml(e.background)}</div>`;
-    html += `</div>`;
-  }
-
-  // Deep Analysis
-  if (e.analysis) {
-    html += `<div class="detail-section">`;
-    html += `<div class="detail-title">🔍 深度剖析与机制拆解</div>`;
-    html += `<div class="detail-content">${escapeHtml(e.analysis)}</div>`;
-    html += `</div>`;
-  }
-
-  // Quote
-  if (e.quote) {
-    html += `<div class="quote-box">${escapeHtml(e.quote)}</div>`;
-  }
-
-  // Commentary
-  if (e.comment) {
-    html += `<div class="article-comment-box">`;
-    html += `<div class="comment-label">💬 观察思考</div>`;
-    html += `<div class="article-comment">${escapeHtml(e.comment).replace(/\n/g, '<br>')}</div>`;
-    html += `</div>`;
-  }
-
-  // Footer Actions
-  html += `<div class="article-footer-bar">`;
-  html += `<div>`;
-  if (e.source) {
-    html += `<a class="entry-source" href="${escapeHtml(e.source)}" target="_blank" rel="noopener">🔗 阅读原文出处</a>`;
-  }
-  html += `</div>`;
-  html += `<button class="back-btn" onclick="copyArticle('${escapeHtml(e.title)}')">📋 分享链接</button>`;
-  html += `</div>`;
-
-  document.getElementById('articleCard').innerHTML = html;
-}
-
-function selectTag(t) {
-  if (activeTag === t) {
-    activeTag = null;
-  } else {
-    activeTag = t;
-  }
-  renderTagList();
-  renderList(document.getElementById('searchBox').value);
-}
-
-function resetFilters() {
-  activeTag = null;
-  document.getElementById('searchBox').value = '';
-  renderTagList();
-  renderList();
-  goHome();
-}
-
-function renderTagList() {
-  const tagCounts = {};
-  allEntries.forEach(e => {
-    (e.tags || []).forEach(t => {
-      tagCounts[t] = (tagCounts[t] || 0) + 1;
-    });
-  });
-
-  const list = document.getElementById('tagList');
-  const tags = Object.keys(tagCounts);
-  if (tags.length === 0) {
-    list.innerHTML = '';
-    return;
-  }
-
-  let html = `<span class="tag-pill ${activeTag === null ? 'active' : ''}" onclick="selectTag(null)">全部 (${allEntries.length})</span>`;
-  tags.forEach(t => {
-    const isAct = activeTag === t;
-    html += `<span class="tag-pill ${isAct ? 'active' : ''}" onclick="selectTag('${escapeHtml(t)}')">${escapeHtml(t)} (${tagCounts[t]})</span>`;
+function buildCategoryNav() {
+  const catSet = new Set();
+  allArticles.forEach(a => (a.tags || []).forEach(t => catSet.add(t)));
+  const list = document.getElementById('navCategoryList');
+  let html = `<span class="nav-item ${activeCategory === null ? 'active' : ''}" onclick="filterCategory(null)">全部要闻</span>`;
+  catSet.forEach(cat => {
+    const isActive = activeCategory === cat;
+    html += `<span class="nav-item ${isActive ? 'active' : ''}" onclick="filterCategory('${escapeHtml(cat)}')">${escapeHtml(cat)}</span>`;
   });
   list.innerHTML = html;
 }
 
-function updateMetrics() {
-  document.getElementById('metricTotal').textContent = allEntries.length;
-  const uniqueTags = new Set();
-  allEntries.forEach(e => (e.tags || []).forEach(t => uniqueTags.add(t)));
-  document.getElementById('metricTags').textContent = uniqueTags.size;
-
-  if (allEntries.length > 0) {
-    const sorted = [...allEntries].sort((a,b) => new Date(b.time) - new Date(a.time));
-    document.getElementById('metricRecent').textContent = formatTime(sorted[0].time).slice(5);
-  } else {
-    document.getElementById('metricRecent').textContent = '-';
-  }
+function filterCategory(cat) {
+  activeCategory = cat;
+  buildCategoryNav();
+  renderFrontPage();
 }
 
-async function loadEntries() {
-  try {
-    const r = await fetch(ENTRIES_URL + '?t=' + Date.now());
-    allEntries = await r.json();
-  } catch (e) {
-    allEntries = [];
-  }
-  updateMetrics();
-  renderTagList();
-  route();
-}
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  searchQuery = e.target.value.trim().toLowerCase();
+  renderFrontPage();
+});
 
-function renderList(query) {
-  const grid = document.getElementById('cardsGrid');
-  const q = (query || '').toLowerCase().trim();
-
-  let filtered = allEntries;
-  if (activeTag) {
-    filtered = filtered.filter(e => (e.tags || []).includes(activeTag));
+// Front Page Render
+function renderFrontPage() {
+  let list = allArticles;
+  if (activeCategory) {
+    list = list.filter(a => (a.tags || []).includes(activeCategory));
   }
-  if (q) {
-    filtered = filtered.filter(e => {
-      const searchStr = (
-        e.title + ' ' +
-        (e.summary || '') + ' ' +
-        (e.background || '') + ' ' +
-        (e.analysis || '') + ' ' +
-        (e.comment || '') + ' ' +
-        (e.stance || '') + ' ' +
-        (e.points || []).join(' ') + ' ' +
-        (e.tags || []).join(' ')
+  if (searchQuery) {
+    list = list.filter(a => {
+      const corpus = (
+        a.title + ' ' +
+        (a.summary || '') + ' ' +
+        (a.background || '') + ' ' +
+        (a.analysis || '') + ' ' +
+        (a.comment || '') + ' ' +
+        (a.points || []).join(' ') + ' ' +
+        (a.tags || []).join(' ')
       ).toLowerCase();
-      return searchStr.includes(q);
+      return corpus.includes(searchQuery);
     });
   }
 
-  if (filtered.length === 0) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><p>' +
-      (q || activeTag ? '未找到符合条件的素材条目' : '归档站暂无素材') + '</p></div>';
+  const summary = document.getElementById('matchSummary');
+  summary.textContent = `共呈现 ${list.length} 篇事实报道` + (activeCategory ? ` · 专栏「${activeCategory}」` : '');
+
+  const frontLayout = document.getElementById('frontLayout');
+  const moreSection = document.getElementById('moreSection');
+  const newsGrid = document.getElementById('newsGrid');
+
+  if (list.length === 0) {
+    frontLayout.innerHTML = '<div style="grid-column:1/-1; padding:60px 0; text-align:center; color:var(--text-muted); font-size:15px;">未找到匹配的报道内容</div>';
+    moreSection.style.display = 'none';
     return;
   }
 
-  const sorted = [...filtered].sort((a,b) => new Date(b.time) - new Date(a.time));
-  grid.innerHTML = sorted.map(renderCardItem).join('');
+  const sorted = [...list].sort((a,b) => new Date(b.time) - new Date(a.time));
+  const lead = sorted[0];
+  const secondary = sorted.slice(1, 3);
+  const remaining = sorted.slice(3);
+
+  // Render Lead Card
+  let leadHtml = `
+    <div class="lead-story" onclick="openArticle('${lead.id}')">
+      <div class="lead-kicker">
+        <span>● 特别观察</span>
+        <span>/</span>
+        <span>${escapeHtml(lead.stance || '事实剖析')}</span>
+      </div>
+  `;
+  if (lead.image) {
+    leadHtml += `
+      <div class="lead-image-wrap">
+        <img class="lead-image" src="${escapeHtml(lead.image)}" alt="${escapeHtml(lead.title)}" loading="lazy">
+      </div>
+    `;
+  }
+  leadHtml += `
+      <h2 class="lead-headline">${escapeHtml(lead.title)}</h2>
+      <p class="lead-deck">${escapeHtml(lead.summary || lead.comment || '')}</p>
+      <div class="lead-byline">
+        <div>
+          <span class="news-badge">${escapeHtml((lead.tags || [])[0] || '头条')}</span>
+          <span style="margin-left:8px;">${formatDate(lead.time)}</span>
+        </div>
+        <span class="read-more-link">阅读完整报道 →</span>
+      </div>
+    </div>
+  `;
+
+  // Render Secondary Column
+  let secHtml = `<div class="secondary-column">`;
+  if (secondary.length > 0) {
+    secondary.forEach(sec => {
+      secHtml += `
+        <div class="sec-story" onclick="openArticle('${sec.id}')">
+          <div class="sec-content">
+            <div class="sec-kicker">${escapeHtml((sec.tags || [])[0] || '要闻')} · ${escapeHtml(sec.stance || '观察')}</div>
+            <h3 class="sec-headline">${escapeHtml(sec.title)}</h3>
+            <p class="sec-snippet">${escapeHtml(sec.summary || sec.comment || '')}</p>
+            <div class="sec-time">${formatDate(sec.time)}</div>
+          </div>
+      `;
+      if (sec.image) {
+        secHtml += `<img class="sec-thumb" src="${escapeHtml(sec.image)}" alt="${escapeHtml(sec.title)}" loading="lazy">`;
+      }
+      secHtml += `</div>`;
+    });
+  } else {
+    secHtml += `
+      <div class="sec-story" style="background:var(--paper-subtle); border-style:dashed;">
+        <div class="sec-content">
+          <div class="sec-kicker">投稿中心</div>
+          <h3 class="sec-headline">更多前沿素材持续编校入库中</h3>
+          <p class="sec-snippet">通过机器人会话投递心跳素材，系统将自动提炼背景要点并在此刊发。</p>
+        </div>
+      </div>
+    `;
+  }
+  secHtml += `</div>`;
+
+  frontLayout.innerHTML = leadHtml + secHtml;
+
+  // Render More Grid
+  if (remaining.length > 0) {
+    moreSection.style.display = 'block';
+    newsGrid.innerHTML = remaining.map(item => `
+      <div class="grid-card" onclick="openArticle('${item.id}')">
+        ${item.image ? `<div class="grid-card-thumb-wrap"><img class="grid-card-thumb" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy"></div>` : ''}
+        <div style="font-size:11px; font-weight:700; color:var(--news-blue); margin-bottom:6px;">${escapeHtml((item.tags || [])[0] || '快讯')} · ${escapeHtml(item.stance || '动态')}</div>
+        <div class="grid-card-title">${escapeHtml(item.title)}</div>
+        <div class="grid-card-desc">${escapeHtml(item.summary || item.comment || '')}</div>
+        <div class="grid-card-footer">
+          <span>${formatDate(item.time)}</span>
+          <span style="color:var(--news-red); font-weight:600;">阅读正文 →</span>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    moreSection.style.display = 'none';
+  }
 }
 
-document.getElementById('searchBox').addEventListener('input', function() {
-  renderList(this.value);
-});
+// Article Detail Page Render
+function renderArticleDetail(art) {
+  const sheet = document.getElementById('articleSheet');
+  const tags = art.tags || [];
+  const points = art.points || [];
 
-loadEntries();
-setInterval(loadEntries, 30000);
+  document.getElementById('artBreadcrumbs').textContent =
+    `要闻中心 > ${tags[0] || '深度专栏'} > ${art.title}`;
+
+  let html = `
+    <div class="art-kicker">
+      <span>● 深度专稿</span>
+      <span>/</span>
+      <span>${escapeHtml(art.stance || '事实剖析')}</span>
+    </div>
+    <h1 class="art-headline">${escapeHtml(art.title)}</h1>
+  `;
+
+  if (art.summary) {
+    html += `<div class="art-deck">${escapeHtml(art.summary)}</div>`;
+  }
+
+  html += `
+    <div class="art-byline-box">
+      <div>
+        <span class="byline-author">素材观察报 · 观察员电</span>
+        <span style="margin: 0 8px; opacity:0.5;">|</span>
+        <span>发稿时间：${formatDate(art.time)}</span>
+      </div>
+      <div class="byline-source">
+        ${art.source ? `<a href="${escapeHtml(art.source)}" target="_blank" rel="noopener">来源出处：${escapeHtml(art.source)} ↗</a>` : '特约观察专稿'}
+      </div>
+    </div>
+  `;
+
+  if (art.image) {
+    html += `
+      <div class="art-featured-image">
+        <img class="art-img" src="${escapeHtml(art.image)}" alt="${escapeHtml(art.title)}">
+        <div class="art-caption">报道配图 · 现场素材核验原图</div>
+      </div>
+    `;
+  }
+
+  if (points.length > 0) {
+    html += `
+      <div class="factbox">
+        <div class="factbox-title">📌 新闻事实核查与关键要点</div>
+        <ul class="factbox-list">
+          ${points.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  if (art.background) {
+    html += `
+      <h3 class="news-subhead">事件背景与前因核实</h3>
+      <div class="art-body-text">${escapeHtml(art.background)}</div>
+    `;
+  }
+
+  if (art.analysis) {
+    html += `
+      <h3 class="news-subhead">深度机制拆解与多维剖析</h3>
+      <div class="art-body-text">${escapeHtml(art.analysis)}</div>
+    `;
+  }
+
+  if (art.quote) {
+    html += `
+      <div class="art-pullquote">
+        <div class="art-pullquote-quote">${escapeHtml(art.quote)}</div>
+        <div class="art-pullquote-source">— 关键言论现场原声</div>
+      </div>
+    `;
+  }
+
+  if (art.comment) {
+    html += `
+      <div class="commentary-box">
+        <div class="commentary-header">观察员手记 / 社论视角</div>
+        <div class="commentary-text">${escapeHtml(art.comment).replace(/\n/g, '<br>')}</div>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="art-footer-actions">
+      <div class="art-tags">
+        ${tags.map(t => `<span class="art-tag-badge"># ${escapeHtml(t)}</span>`).join('')}
+      </div>
+      <div>
+        <button class="share-btn" onclick="copyShareLink('${escapeHtml(art.title)}')">📋 分享本篇报道</button>
+      </div>
+    </div>
+  `;
+
+  sheet.innerHTML = html;
+}
+
+function copyShareLink(title) {
+  const text = `${title} - 素材观察报\n${window.location.href}`;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('报道链接已复制');
+  }).catch(() => {
+    showToast('复制失败');
+  });
+}
+
+loadData();
 </script>
 </body>
 </html>
