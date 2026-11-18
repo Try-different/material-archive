@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "title": "素材归档站 · 深度观察与思考",
+    "author": "Try-different",
+    "date": "2026.11.19",
+    "reading_time": "约 4 分钟",
+    "tags": ["基建认知", "特摄叙事", "结构化思考"],
+    "subtitle": "记录前沿动态、生活隐喻与文化观察，用结构化事实对抗信息过载",
+    "hero_image": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1400&h=600&fit=crop",
+    "lang": null
+  },
+  "upgrades": [
+    {
+      "type": "pullquote",
+      "line": 9,
+      "accent": "真实单价"
+    },
+    {
+      "type": "pullquote",
+      "line": 41,
+      "accent": "心理战"
+    },
+    {
+      "type": "checklist",
+      "lines": [67, 68, 69]
+    }
+  ]
+}
